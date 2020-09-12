@@ -1,7 +1,7 @@
 @JsonSerializable()
 class {{ className }} {
   {{#if typeName }}
-  static final String typeName = "{{ typeName }}";
+  static final String schemaTypeName = "{{ typeName }}";
   {{/if}}
 
   {{#each fields}}{{#if type}}{{#if name}}
@@ -9,7 +9,7 @@ class {{ className }} {
   {{/if}}
   @JsonKey(required: {{isRequired}}, disallowNullValue: {{isRequired}})
   {{ resolveType type
-      isRequired
+      'final'
       (takeFirst contextName ../contextName)
       (takeFirst contextModels ../contextModels)
       isArray

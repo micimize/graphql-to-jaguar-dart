@@ -6,6 +6,8 @@ import { toPascalCase } from "@graphql-codegen/plugin-helpers";
 import expectedGeneratedFileFor from "./expected-generated-file-for";
 import multilineComment from "./multiline-comment";
 import configureClassExtends, {
+  //registerFragmentPaths,
+  //withFragmentPaths,
   configureResolveMixins,
   MixinConfig
 } from "./class-extends";
@@ -35,7 +37,9 @@ import {
   dartDirective,
   callMethod,
   emptySafeEach,
-  eachUniqueBy
+  eachUniqueBy,
+  eachDuplicateBy,
+  deepMergeOnKeys
 } from "./utils";
 
 function wrapHelpers<T>(helpers: T) {
@@ -82,7 +86,11 @@ const helpers = wrapHelpers({
   dartDirective,
   emptySafeEach,
   eachUniqueBy,
-  callMethod
+  eachDuplicateBy,
+  callMethod,
+  //registerFragmentPaths,
+  //withFragmentPaths,
+  deepMergeOnKeys: deepMergeOnKeys as any
 });
 
 export interface Config extends AddInputHelpersConfig, MixinConfig {

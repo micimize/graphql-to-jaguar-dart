@@ -1,6 +1,6 @@
 {
   "name": "graphql-to-dart",
-  "version": "1.2.1-beta",
+  "version": "2.0.0-beta14",
   "description": "generate dart json_serializable classes using graphql-code-generator",
   "repository": {
     "type": "git",
@@ -28,6 +28,7 @@
     "@graphql-codegen/core": "^1.9.1",
     "@graphql-codegen/near-operation-file-preset": "^1.11.0",
     "@graphql-codegen/plugin-helpers": "^1.9.1",
+    "deepmerge": "^4.2.2",
     "graphql-codegen-core": "^0.18.0",
     "graphql-codegen-plugin-handlebars-helpers": "0.18.0",
     "graphql-codegen-plugin-helpers": "^0.18.2",
@@ -39,7 +40,7 @@
     "@babel/node": "^7.2.2",
     "awesome-typescript-loader": "^5.2.1",
     "codegen-templates-scripts": "0.18.0",
-    "graphql": "14.1.1",
+    "graphql": "14.5.8",
     "graphql-code-generator": "^0.18.0",
     "raw-loader": "^4.0.0",
     "starwars-test-graphql-server": "0.2.0-alpha3",

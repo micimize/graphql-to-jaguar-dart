@@ -1,6 +1,9 @@
 import { toPascalCase } from "@graphql-codegen/plugin-helpers";
 import fragmentClassNames from "./fragment-class-names";
-import { dedupe } from "./utils";
+import { dedupe, arrayify } from "./utils";
+import { OperationDefinitionNode, parse, visit, ASTNode } from "graphql";
+
+import { Operation, Fragment } from "graphql-codegen-core";
 
 export interface MixinConfig {
   /**
@@ -53,6 +56,69 @@ function inherit(inheritanceKeyword, ..._parents) {
   }
   return `${inheritanceKeyword} ${parents.map(toPascalCase).join(", ")} `;
 }
+
+function nodeName(node: ASTNode): string {
+  if ("alias" in node && node.alias) {
+    return node.alias.value || "";
+  }
+  if ("name" in node && node.name) {
+    return node.name.value || "";
+  }
+  if ("value" in node) {
+    let v = node.value;
+    return v === undefined || v === null ? "" : v.toString();
+  }
+  return "";
+}
+
+/* I'm just not going to support foo { biz { bar } ...bizContainingBangFragment }
+let fragmentSubPaths = {};
+
+export function registerFragmentPaths(frag: Fragment) {
+  visit(parse(frag.document), {
+    enter(node, key, parent, path, ancestors) {
+      const name = nodeName(node);
+      if (name) {
+        const namePath = JSON.stringify(
+          arrayify(ancestors as ASTNode[])
+            .map(nodeName)
+            .filter(a => a)
+        );
+        fragmentSubPaths[namePath] = dedupe([
+          ...(fragmentSubPaths[namePath] || []),
+          nodeName(node)
+        ]);
+      }
+    }
+  });
+}
+
+export function withFragmentPaths(op: Operation | Fragment, { fn }) {
+  let fragmentPaths: { [p: string]: string[] } = JSON.parse(
+    JSON.stringify(fragmentSubPaths)
+  );
+  const ast = parse(op.document);
+  visit(ast, {
+    FragmentSpread: {
+      enter(node, key, parent, path, ancestors) {
+        const namePath = JSON.stringify(
+          arrayify(ancestors as ASTNode[])
+            .map(nodeName)
+            .filter(a => a)
+        );
+        fragmentPaths[namePath] = dedupe([
+          ...(fragmentPaths[namePath] || []),
+          nodeName(node)
+        ]);
+      }
+    }
+  });
+  return fn({
+    ...op,
+    fragmentPaths
+  });
+}
+*/
 
 // we extend from interfaces in dart to allow functionality
 // piggybacking via replaceTypes

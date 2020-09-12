@@ -162,6 +162,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.10"
+  equatable:
+    dependency: "direct main"
+    description:
+      name: equatable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   fixnum:
     dependency: transitive
     description:
@@ -549,5 +556,5 @@ packages:
     source: hosted
     version: "2.1.15"
 sdks:
-  dart: ">=2.6.0-dev.8.0 <3.0.0"
+  dart: ">=2.7.0 <3.0.0"
   flutter: ">=1.9.1+hotfix.5 <2.0.0"

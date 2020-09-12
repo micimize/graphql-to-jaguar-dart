@@ -3,9 +3,8 @@
   {{#if description }}{{ multilineComment description }}
   {{/if}}
   @JsonKey(name: r'{{rawName}}', required: {{isRequired}}, disallowNullValue: {{isRequired}})
-  {{ type }} get {{ name }} => fields.{{ schemaFieldName }};
-  set {{ name }} ({{ takeLastWord type }} {{ name }}) => fields.{{ schemaFieldName }} = {{ name }};
-{{~/if}}{{/if}}
+  {{ type }} {{ name }} => fields.{{ schemaFieldName }};
+{{/if}}{{/if}}
 {{~/inline}}
 
 {{#if fields}}
@@ -14,11 +13,11 @@
     this
     description=description
     rawName=name
-    name=(camelCase (dartName name))
+    name=(dartName name)
     schemaFieldName=(dartName schemaFieldName)
     type=(
         resolveType type
-            isRequired
+            'get'
             (takeFirst contextName ../contextName)
             (takeFirst contextModels ../contextModels)
             isArray
@@ -27,16 +26,18 @@
     )
 }}
 {{else}}
+{{#unless ../excludeDupes}}
 {{#each this}}
   @JsonKey(name: r'{{name}}', required: {{isRequired}}, disallowNullValue: {{isRequired}})
   {{ resolveType type
-      'inline'
+      (takeFirst ../../dupeQualifier 'final')
       ../../contextName
       ../../contextModels
       isArray
       raw
       ../name
-  }} {{ camelCase (dartName name) }};
+  }} {{ dartName name }};
 {{/each}}
+{{/unless}}
 {{/eachUniqueBy}}
 {{/if}}

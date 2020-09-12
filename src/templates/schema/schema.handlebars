@@ -14,7 +14,7 @@ part '{{ expectedGeneratedFileFor outputFile }}';
 {{/each}}
 
 {{#each unions}}
-// TODO unions in dart seem ugly by necessity atm
+// unions in dart seem ugly by necessity atm
 {{> union this
   className=(toPascalCase name)
 }}

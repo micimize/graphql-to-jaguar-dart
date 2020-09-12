@@ -1,24 +1,23 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
-import './example_mixin.dart';
 import 'package:starwars/graphql/schema.dart';
 
 part '_human_fragment.gql.g.dart';
 
 ///
 /// See [HomeSelectionSet] for the full stand-alone class
+@JsonSerializable(createFactory: false)
 mixin Home on Human {
-  static final String typeName = "Human";
+  static final String schemaTypeName = "Human";
+
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  String get typename;
 
   @JsonKey(name: r'home', required: false, disallowNullValue: false)
   String get home => fields.homePlanet;
-  set home(String home) => fields.homePlanet = home;
   @JsonKey(name: r'planet', required: false, disallowNullValue: false)
-  String planet;
-
-  /// Copies fields from [other] into a new `Home`
-  static HomeSelectionSet from(Human other) => HomeSelectionSet.from(other);
+  String get planet;
 
   static HomeSelectionSet fromJson(Map<String, dynamic> json) =>
       HomeSelectionSet.fromJson(json);
@@ -27,31 +26,49 @@ mixin Home on Human {
 /// Materialized class that implements the fragment [Home]
 ///
 /// Gives access to all the usual selection set helpers
+
 @JsonSerializable()
 class HomeSelectionSet extends Human with Home {
   static final String schemaTypeName = "Human";
 
-  @protected
-  String typename;
+  /// The `__typename` meta-field
+  ///
+  /// GraphQL supports type name introspection at any point within a query by the meta-field `__typename: String!` ([spec])
+  ///
+  /// [spec]: https://github.com/graphql/graphql-spec/blob/c7bface58bf6f58cc809f279cba1b6245de914b4/spec/Section%204%20--%20Introspection.md#type-name-introspection)
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  final String typename;
+
+  @JsonKey(name: r'planet', required: false, disallowNullValue: false)
+  final String planet;
+
+  @override
+  List<Object> get props => [
+        ...super.props,
+        planet,
+      ];
 
   HomeSelectionSet({
+    this.typename,
     String home,
-    String planet,
+    this.planet,
   }) : super(
           homePlanet: home,
-        ) {
-    this.planet = planet;
-  }
+        );
 
-  HomeSelectionSet.empty();
+  HomeSelectionSet.fromObjectType(
+    Human objectType, {
+    this.typename,
+    this.planet,
+  }) : super.fromFields(objectType.fields);
 
-  /// Creates a copy of this `HomeSelectionSet`
-  HomeSelectionSet copy() => HomeSelectionSet.empty()..addAll(this);
-
-  /// Copies fields from [other] into a new `HomeSelectionSet`
-  HomeSelectionSet.from(Human other) {
-    addAll(other);
-  }
+  HomeSelectionSet.partial({
+    this.typename,
+    String home,
+    this.planet,
+  }) : super(
+          homePlanet: home,
+        );
 
   @protected
   Set<String> get missingRequiredFields {
@@ -59,54 +76,80 @@ class HomeSelectionSet extends Human with Home {
     return missingFields;
   }
 
-  /// Adds all fields from [other] to this `HomeSelectionSet`.
+  /// Creates a new [HomeSelectionSet] with the given non-null values overridden
+  HomeSelectionSet copyWith({
+    String typename,
+    String home,
+    String planet,
+  }) =>
+      HomeSelectionSet(
+        typename: typename ?? this.typename,
+        home: home ?? this.home,
+        planet: planet ?? this.planet,
+      );
+
+  /// Creates a new [HomeSelectionSet] with the specified fields nullified
   ///
-  /// pre-existing values are not overwritten unless `overwrite: true`
+  /// All fields default to `false`, so `field: null` or `field: true` nullifies a field.
+  HomeSelectionSet copyWithout({
+    bool typename = false,
+    bool home = false,
+    bool planet = false,
+  }) =>
+      HomeSelectionSet(
+        typename: typename == false ? this.typename : null,
+        home: home == false ? this.home : null,
+        planet: planet == false ? this.planet : null,
+      );
+
+  /// Creates a new [HomeSelectionSet] with non-null values from [other] as attribute overrides
+  HomeSelectionSet mergedLeftWith(covariant Home other) {
+    assert(other != null, "$this Cannot be merged with null");
+    return copyWith(
+      typename: other.typename,
+      home: other.home,
+      planet: other.planet,
+    );
+  }
+
+  /// Alias for [mergedLeftWith]
   @override
-  void addAll(
-    covariant HomeSelectionSet other, {
-    bool overwrite = true,
-  }) {
-    super.addAll(other, overwrite: overwrite);
+  HomeSelectionSet operator <<(covariant Home other) => mergedLeftWith(other);
 
-    if (overwrite != null && overwrite) {
-      planet = other.planet ?? planet;
-    } else {
-      planet ??= other.planet;
-    }
-  }
-
-  factory HomeSelectionSet.fromJson(Map<String, dynamic> json) {
-    HomeSelectionSet instance = _$HomeSelectionSetFromJson(json);
-    final __typename = json['__typename'];
-    instance.typename = __typename;
-
-    return instance;
-  }
+  factory HomeSelectionSet.fromJson(Map<String, dynamic> json) =>
+      _$HomeSelectionSetFromJson(json);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = _$HomeSelectionSetToJson(this);
-    json['__typename'] = typename;
 
     return json;
+  }
+
+  /// Construct a [HomeSelectionSet] from a [Home]
+  factory HomeSelectionSet.from(Home source) {
+    assert(source != null, "Cannot construct HomeSelectionSet from null");
+    return HomeSelectionSet(
+      typename: source.typename,
+      home: source.home,
+      planet: source.planet,
+    );
   }
 }
 
 ///
 /// See [DimensionsSelectionSet] for the full stand-alone class
+@JsonSerializable(createFactory: false)
 mixin Dimensions on Human {
-  static final String typeName = "Human";
+  static final String schemaTypeName = "Human";
+
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  String get typename;
 
   @JsonKey(name: r'height', required: false, disallowNullValue: false)
   double get height => fields.height;
-  set height(double height) => fields.height = height;
+
   @JsonKey(name: r'mass', required: false, disallowNullValue: false)
   double get mass => fields.mass;
-  set mass(double mass) => fields.mass = mass;
-
-  /// Copies fields from [other] into a new `Dimensions`
-  static DimensionsSelectionSet from(Human other) =>
-      DimensionsSelectionSet.from(other);
 
   static DimensionsSelectionSet fromJson(Map<String, dynamic> json) =>
       DimensionsSelectionSet.fromJson(json);
@@ -115,14 +158,26 @@ mixin Dimensions on Human {
 /// Materialized class that implements the fragment [Dimensions]
 ///
 /// Gives access to all the usual selection set helpers
+
 @JsonSerializable()
 class DimensionsSelectionSet extends Human with Dimensions {
   static final String schemaTypeName = "Human";
 
-  @protected
-  String typename;
+  /// The `__typename` meta-field
+  ///
+  /// GraphQL supports type name introspection at any point within a query by the meta-field `__typename: String!` ([spec])
+  ///
+  /// [spec]: https://github.com/graphql/graphql-spec/blob/c7bface58bf6f58cc809f279cba1b6245de914b4/spec/Section%204%20--%20Introspection.md#type-name-introspection)
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  final String typename;
+
+  @override
+  List<Object> get props => [
+        ...super.props,
+      ];
 
   DimensionsSelectionSet({
+    this.typename,
     double height,
     double mass,
   }) : super(
@@ -130,15 +185,19 @@ class DimensionsSelectionSet extends Human with Dimensions {
           mass: mass,
         );
 
-  DimensionsSelectionSet.empty();
+  DimensionsSelectionSet.fromObjectType(
+    Human objectType, {
+    this.typename,
+  }) : super.fromFields(objectType.fields);
 
-  /// Creates a copy of this `DimensionsSelectionSet`
-  DimensionsSelectionSet copy() => DimensionsSelectionSet.empty()..addAll(this);
-
-  /// Copies fields from [other] into a new `DimensionsSelectionSet`
-  DimensionsSelectionSet.from(Human other) {
-    addAll(other);
-  }
+  DimensionsSelectionSet.partial({
+    this.typename,
+    double height,
+    double mass,
+  }) : super(
+          height: height,
+          mass: mass,
+        );
 
   @protected
   Set<String> get missingRequiredFields {
@@ -146,30 +205,64 @@ class DimensionsSelectionSet extends Human with Dimensions {
     return missingFields;
   }
 
-  /// Adds all fields from [other] to this `DimensionsSelectionSet`.
+  /// Creates a new [DimensionsSelectionSet] with the given non-null values overridden
+  DimensionsSelectionSet copyWith({
+    String typename,
+    double height,
+    double mass,
+  }) =>
+      DimensionsSelectionSet(
+        typename: typename ?? this.typename,
+        height: height ?? this.height,
+        mass: mass ?? this.mass,
+      );
+
+  /// Creates a new [DimensionsSelectionSet] with the specified fields nullified
   ///
-  /// pre-existing values are not overwritten unless `overwrite: true`
+  /// All fields default to `false`, so `field: null` or `field: true` nullifies a field.
+  DimensionsSelectionSet copyWithout({
+    bool typename = false,
+    bool height = false,
+    bool mass = false,
+  }) =>
+      DimensionsSelectionSet(
+        typename: typename == false ? this.typename : null,
+        height: height == false ? this.height : null,
+        mass: mass == false ? this.mass : null,
+      );
+
+  /// Creates a new [DimensionsSelectionSet] with non-null values from [other] as attribute overrides
+  DimensionsSelectionSet mergedLeftWith(covariant Dimensions other) {
+    assert(other != null, "$this Cannot be merged with null");
+    return copyWith(
+      typename: other.typename,
+      height: other.height,
+      mass: other.mass,
+    );
+  }
+
+  /// Alias for [mergedLeftWith]
   @override
-  void addAll(
-    covariant DimensionsSelectionSet other, {
-    bool overwrite = true,
-  }) {
-    super.addAll(other, overwrite: overwrite);
-  }
+  DimensionsSelectionSet operator <<(covariant Dimensions other) =>
+      mergedLeftWith(other);
 
-  factory DimensionsSelectionSet.fromJson(Map<String, dynamic> json) {
-    DimensionsSelectionSet instance = _$DimensionsSelectionSetFromJson(json);
-    final __typename = json['__typename'];
-    instance.typename = __typename;
-
-    return instance;
-  }
+  factory DimensionsSelectionSet.fromJson(Map<String, dynamic> json) =>
+      _$DimensionsSelectionSetFromJson(json);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = _$DimensionsSelectionSetToJson(this);
-    json['__typename'] = typename;
 
     return json;
+  }
+
+  /// Construct a [DimensionsSelectionSet] from a [Dimensions]
+  factory DimensionsSelectionSet.from(Dimensions source) {
+    assert(source != null, "Cannot construct DimensionsSelectionSet from null");
+    return DimensionsSelectionSet(
+      typename: source.typename,
+      height: source.height,
+      mass: source.mass,
+    );
   }
 }
 
@@ -177,16 +270,27 @@ class DimensionsSelectionSet extends Human with Dimensions {
 class RelationshipsStarships extends Starship with HelloMixin {
   static final String schemaTypeName = "Starship";
 
-  @protected
-  String typename;
+  /// The `__typename` meta-field
+  ///
+  /// GraphQL supports type name introspection at any point within a query by the meta-field `__typename: String!` ([spec])
+  ///
+  /// [spec]: https://github.com/graphql/graphql-spec/blob/c7bface58bf6f58cc809f279cba1b6245de914b4/spec/Section%204%20--%20Introspection.md#type-name-introspection)
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  final String typename;
 
   @JsonKey(name: r'name', required: true, disallowNullValue: true)
   String get name => fields.name;
-  set name(String name) => fields.name = name;
+
   @JsonKey(name: r'length', required: false, disallowNullValue: false)
   double get length => fields.length;
-  set length(double length) => fields.length = length;
+
+  @override
+  List<Object> get props => [
+        ...super.props,
+      ];
+
   RelationshipsStarships({
+    this.typename,
     @required String name,
     double length,
   }) : super(
@@ -194,15 +298,19 @@ class RelationshipsStarships extends Starship with HelloMixin {
           length: length,
         );
 
-  RelationshipsStarships.empty();
+  RelationshipsStarships.fromObjectType(
+    Starship objectType, {
+    this.typename,
+  }) : super.fromFields(objectType.fields);
 
-  /// Creates a copy of this `RelationshipsStarships`
-  RelationshipsStarships copy() => RelationshipsStarships.empty()..addAll(this);
-
-  /// Copies fields from [other] into a new `RelationshipsStarships`
-  RelationshipsStarships.from(Starship other) {
-    addAll(other);
-  }
+  RelationshipsStarships.partial({
+    this.typename,
+    String name,
+    double length,
+  }) : super(
+          name: name,
+          length: length,
+        );
 
   @protected
   Set<String> get missingRequiredFields {
@@ -213,28 +321,53 @@ class RelationshipsStarships extends Starship with HelloMixin {
     return missingFields;
   }
 
-  /// Adds all fields from [other] to this `RelationshipsStarships`.
+  /// Creates a new [RelationshipsStarships] with the given non-null values overridden
+  RelationshipsStarships copyWith({
+    String typename,
+    String name,
+    double length,
+  }) =>
+      RelationshipsStarships(
+        typename: typename ?? this.typename,
+        name: name ?? this.name,
+        length: length ?? this.length,
+      );
+
+  /// Creates a new [RelationshipsStarships] with the specified fields nullified
   ///
-  /// pre-existing values are not overwritten unless `overwrite: true`
+  /// All fields default to `false`, so `field: null` or `field: true` nullifies a field.
+  RelationshipsStarships copyWithout({
+    bool typename = false,
+    bool name = false,
+    bool length = false,
+  }) =>
+      RelationshipsStarships(
+        typename: typename == false ? this.typename : null,
+        name: name == false ? this.name : null,
+        length: length == false ? this.length : null,
+      );
+
+  /// Creates a new [RelationshipsStarships] with non-null values from [other] as attribute overrides
+  RelationshipsStarships mergedLeftWith(
+      covariant RelationshipsStarships other) {
+    assert(other != null, "$this Cannot be merged with null");
+    return copyWith(
+      typename: other.typename,
+      name: other.name,
+      length: other.length,
+    );
+  }
+
+  /// Alias for [mergedLeftWith]
   @override
-  void addAll(
-    covariant RelationshipsStarships other, {
-    bool overwrite = true,
-  }) {
-    super.addAll(other, overwrite: overwrite);
-  }
+  RelationshipsStarships operator <<(covariant RelationshipsStarships other) =>
+      mergedLeftWith(other);
 
-  factory RelationshipsStarships.fromJson(Map<String, dynamic> json) {
-    RelationshipsStarships instance = _$RelationshipsStarshipsFromJson(json);
-    final __typename = json['__typename'];
-    instance.typename = __typename;
-
-    return instance;
-  }
+  factory RelationshipsStarships.fromJson(Map<String, dynamic> json) =>
+      _$RelationshipsStarshipsFromJson(json);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = _$RelationshipsStarshipsToJson(this);
-    json['__typename'] = typename;
 
     return json;
   }
@@ -244,27 +377,40 @@ class RelationshipsStarships extends Starship with HelloMixin {
 class RelationshipsFriends extends Character with HelloMixin {
   static final String schemaTypeName = "Character";
 
-  @protected
-  String typename;
+  /// The `__typename` meta-field
+  ///
+  /// GraphQL supports type name introspection at any point within a query by the meta-field `__typename: String!` ([spec])
+  ///
+  /// [spec]: https://github.com/graphql/graphql-spec/blob/c7bface58bf6f58cc809f279cba1b6245de914b4/spec/Section%204%20--%20Introspection.md#type-name-introspection)
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  final String typename;
 
   @JsonKey(name: r'name', required: true, disallowNullValue: true)
   String get name => fields.name;
-  set name(String name) => fields.name = name;
+
+  @override
+  List<Object> get props => [
+        ...super.props,
+      ];
+
   RelationshipsFriends({
+    this.typename,
     @required String name,
   }) : super(
           name: name,
         );
 
-  RelationshipsFriends.empty();
+  RelationshipsFriends.fromObjectType(
+    Character objectType, {
+    this.typename,
+  }) : super.fromFields(objectType.fields);
 
-  /// Creates a copy of this `RelationshipsFriends`
-  RelationshipsFriends copy() => RelationshipsFriends.empty()..addAll(this);
-
-  /// Copies fields from [other] into a new `RelationshipsFriends`
-  RelationshipsFriends.from(Character other) {
-    addAll(other);
-  }
+  RelationshipsFriends.partial({
+    this.typename,
+    String name,
+  }) : super(
+          name: name,
+        );
 
   @protected
   Set<String> get missingRequiredFields {
@@ -275,28 +421,47 @@ class RelationshipsFriends extends Character with HelloMixin {
     return missingFields;
   }
 
-  /// Adds all fields from [other] to this `RelationshipsFriends`.
+  /// Creates a new [RelationshipsFriends] with the given non-null values overridden
+  RelationshipsFriends copyWith({
+    String typename,
+    String name,
+  }) =>
+      RelationshipsFriends(
+        typename: typename ?? this.typename,
+        name: name ?? this.name,
+      );
+
+  /// Creates a new [RelationshipsFriends] with the specified fields nullified
   ///
-  /// pre-existing values are not overwritten unless `overwrite: true`
+  /// All fields default to `false`, so `field: null` or `field: true` nullifies a field.
+  RelationshipsFriends copyWithout({
+    bool typename = false,
+    bool name = false,
+  }) =>
+      RelationshipsFriends(
+        typename: typename == false ? this.typename : null,
+        name: name == false ? this.name : null,
+      );
+
+  /// Creates a new [RelationshipsFriends] with non-null values from [other] as attribute overrides
+  RelationshipsFriends mergedLeftWith(covariant RelationshipsFriends other) {
+    assert(other != null, "$this Cannot be merged with null");
+    return copyWith(
+      typename: other.typename,
+      name: other.name,
+    );
+  }
+
+  /// Alias for [mergedLeftWith]
   @override
-  void addAll(
-    covariant RelationshipsFriends other, {
-    bool overwrite = true,
-  }) {
-    super.addAll(other, overwrite: overwrite);
-  }
+  RelationshipsFriends operator <<(covariant RelationshipsFriends other) =>
+      mergedLeftWith(other);
 
-  factory RelationshipsFriends.fromJson(Map<String, dynamic> json) {
-    RelationshipsFriends instance = _$RelationshipsFriendsFromJson(json);
-    final __typename = json['__typename'];
-    instance.typename = __typename;
-
-    return instance;
-  }
+  factory RelationshipsFriends.fromJson(Map<String, dynamic> json) =>
+      _$RelationshipsFriendsFromJson(json);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = _$RelationshipsFriendsToJson(this);
-    json['__typename'] = typename;
 
     return json;
   }
@@ -304,20 +469,18 @@ class RelationshipsFriends extends Character with HelloMixin {
 
 ///
 /// See [RelationshipsSelectionSet] for the full stand-alone class
+@JsonSerializable(createFactory: false)
 mixin Relationships on Human {
-  static final String typeName = "Human";
+  static final String schemaTypeName = "Human";
+
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  String get typename;
 
   @JsonKey(name: r'friends', required: false, disallowNullValue: false)
   List<RelationshipsFriends> get friends => fields.friends;
-  set friends(List<RelationshipsFriends> friends) => fields.friends = friends;
+
   @JsonKey(name: r'starships', required: false, disallowNullValue: false)
   List<RelationshipsStarships> get starships => fields.starships;
-  set starships(List<RelationshipsStarships> starships) =>
-      fields.starships = starships;
-
-  /// Copies fields from [other] into a new `Relationships`
-  static RelationshipsSelectionSet from(Human other) =>
-      RelationshipsSelectionSet.from(other);
 
   static RelationshipsSelectionSet fromJson(Map<String, dynamic> json) =>
       RelationshipsSelectionSet.fromJson(json);
@@ -326,14 +489,26 @@ mixin Relationships on Human {
 /// Materialized class that implements the fragment [Relationships]
 ///
 /// Gives access to all the usual selection set helpers
+
 @JsonSerializable()
 class RelationshipsSelectionSet extends Human with Relationships {
   static final String schemaTypeName = "Human";
 
-  @protected
-  String typename;
+  /// The `__typename` meta-field
+  ///
+  /// GraphQL supports type name introspection at any point within a query by the meta-field `__typename: String!` ([spec])
+  ///
+  /// [spec]: https://github.com/graphql/graphql-spec/blob/c7bface58bf6f58cc809f279cba1b6245de914b4/spec/Section%204%20--%20Introspection.md#type-name-introspection)
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  final String typename;
+
+  @override
+  List<Object> get props => [
+        ...super.props,
+      ];
 
   RelationshipsSelectionSet({
+    this.typename,
     List<RelationshipsFriends> friends,
     List<RelationshipsStarships> starships,
   }) : super(
@@ -341,16 +516,19 @@ class RelationshipsSelectionSet extends Human with Relationships {
           starships: starships,
         );
 
-  RelationshipsSelectionSet.empty();
+  RelationshipsSelectionSet.fromObjectType(
+    Human objectType, {
+    this.typename,
+  }) : super.fromFields(objectType.fields);
 
-  /// Creates a copy of this `RelationshipsSelectionSet`
-  RelationshipsSelectionSet copy() =>
-      RelationshipsSelectionSet.empty()..addAll(this);
-
-  /// Copies fields from [other] into a new `RelationshipsSelectionSet`
-  RelationshipsSelectionSet.from(Human other) {
-    addAll(other);
-  }
+  RelationshipsSelectionSet.partial({
+    this.typename,
+    List<RelationshipsFriends> friends,
+    List<RelationshipsStarships> starships,
+  }) : super(
+          friends: friends,
+          starships: starships,
+        );
 
   @protected
   Set<String> get missingRequiredFields {
@@ -358,53 +536,87 @@ class RelationshipsSelectionSet extends Human with Relationships {
     return missingFields;
   }
 
-  /// Adds all fields from [other] to this `RelationshipsSelectionSet`.
+  /// Creates a new [RelationshipsSelectionSet] with the given non-null values overridden
+  RelationshipsSelectionSet copyWith({
+    String typename,
+    List<RelationshipsFriends> friends,
+    List<RelationshipsStarships> starships,
+  }) =>
+      RelationshipsSelectionSet(
+        typename: typename ?? this.typename,
+        friends: friends ?? this.friends,
+        starships: starships ?? this.starships,
+      );
+
+  /// Creates a new [RelationshipsSelectionSet] with the specified fields nullified
   ///
-  /// pre-existing values are not overwritten unless `overwrite: true`
+  /// All fields default to `false`, so `field: null` or `field: true` nullifies a field.
+  RelationshipsSelectionSet copyWithout({
+    bool typename = false,
+    bool friends = false,
+    bool starships = false,
+  }) =>
+      RelationshipsSelectionSet(
+        typename: typename == false ? this.typename : null,
+        friends: friends == false ? this.friends : null,
+        starships: starships == false ? this.starships : null,
+      );
+
+  /// Creates a new [RelationshipsSelectionSet] with non-null values from [other] as attribute overrides
+  RelationshipsSelectionSet mergedLeftWith(covariant Relationships other) {
+    assert(other != null, "$this Cannot be merged with null");
+    return copyWith(
+      typename: other.typename,
+      friends: other.friends,
+      starships: other.starships,
+    );
+  }
+
+  /// Alias for [mergedLeftWith]
   @override
-  void addAll(
-    covariant RelationshipsSelectionSet other, {
-    bool overwrite = true,
-  }) {
-    super.addAll(other, overwrite: overwrite);
-  }
+  RelationshipsSelectionSet operator <<(covariant Relationships other) =>
+      mergedLeftWith(other);
 
-  factory RelationshipsSelectionSet.fromJson(Map<String, dynamic> json) {
-    RelationshipsSelectionSet instance =
-        _$RelationshipsSelectionSetFromJson(json);
-    final __typename = json['__typename'];
-    instance.typename = __typename;
-
-    return instance;
-  }
+  factory RelationshipsSelectionSet.fromJson(Map<String, dynamic> json) =>
+      _$RelationshipsSelectionSetFromJson(json);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = _$RelationshipsSelectionSetToJson(this);
-    json['__typename'] = typename;
 
     return json;
+  }
+
+  /// Construct a [RelationshipsSelectionSet] from a [Relationships]
+  factory RelationshipsSelectionSet.from(Relationships source) {
+    assert(
+        source != null, "Cannot construct RelationshipsSelectionSet from null");
+    return RelationshipsSelectionSet(
+      typename: source.typename,
+      friends: source.friends,
+      starships: source.starships,
+    );
   }
 }
 
 ///
 /// See [InfoSelectionSet] for the full stand-alone class
+@JsonSerializable(createFactory: false)
 mixin Info on Human implements Dimensions, Home {
-  static final String typeName = "Human";
+  static final String schemaTypeName = "Human";
+
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  String get typename;
 
   @JsonKey(name: r'height', required: false, disallowNullValue: false)
   double get height => fields.height;
-  set height(double height) => fields.height = height;
+
   @JsonKey(name: r'mass', required: false, disallowNullValue: false)
   double get mass => fields.mass;
-  set mass(double mass) => fields.mass = mass;
+
   @JsonKey(name: r'home', required: false, disallowNullValue: false)
   String get home => fields.homePlanet;
-  set home(String home) => fields.homePlanet = home;
   @JsonKey(name: r'planet', required: false, disallowNullValue: false)
-  String planet;
-
-  /// Copies fields from [other] into a new `Info`
-  static InfoSelectionSet from(Human other) => InfoSelectionSet.from(other);
+  String get planet;
 
   static InfoSelectionSet fromJson(Map<String, dynamic> json) =>
       InfoSelectionSet.fromJson(json);
@@ -413,35 +625,57 @@ mixin Info on Human implements Dimensions, Home {
 /// Materialized class that implements the fragment [Info]
 ///
 /// Gives access to all the usual selection set helpers
+
 @JsonSerializable()
 class InfoSelectionSet extends Human with Info {
   static final String schemaTypeName = "Human";
 
-  @protected
-  String typename;
+  /// The `__typename` meta-field
+  ///
+  /// GraphQL supports type name introspection at any point within a query by the meta-field `__typename: String!` ([spec])
+  ///
+  /// [spec]: https://github.com/graphql/graphql-spec/blob/c7bface58bf6f58cc809f279cba1b6245de914b4/spec/Section%204%20--%20Introspection.md#type-name-introspection)
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  final String typename;
+
+  @JsonKey(name: r'planet', required: false, disallowNullValue: false)
+  final String planet;
+
+  @override
+  List<Object> get props => [
+        ...super.props,
+        planet,
+      ];
 
   InfoSelectionSet({
+    this.typename,
     double height,
     double mass,
     String home,
-    String planet,
+    this.planet,
   }) : super(
           height: height,
           mass: mass,
           homePlanet: home,
-        ) {
-    this.planet = planet;
-  }
+        );
 
-  InfoSelectionSet.empty();
+  InfoSelectionSet.fromObjectType(
+    Human objectType, {
+    this.typename,
+    this.planet,
+  }) : super.fromFields(objectType.fields);
 
-  /// Creates a copy of this `InfoSelectionSet`
-  InfoSelectionSet copy() => InfoSelectionSet.empty()..addAll(this);
-
-  /// Copies fields from [other] into a new `InfoSelectionSet`
-  InfoSelectionSet.from(Human other) {
-    addAll(other);
-  }
+  InfoSelectionSet.partial({
+    this.typename,
+    double height,
+    double mass,
+    String home,
+    this.planet,
+  }) : super(
+          height: height,
+          mass: mass,
+          homePlanet: home,
+        );
 
   @protected
   Set<String> get missingRequiredFields {
@@ -449,35 +683,74 @@ class InfoSelectionSet extends Human with Info {
     return missingFields;
   }
 
-  /// Adds all fields from [other] to this `InfoSelectionSet`.
+  /// Creates a new [InfoSelectionSet] with the given non-null values overridden
+  InfoSelectionSet copyWith({
+    String typename,
+    double height,
+    double mass,
+    String home,
+    String planet,
+  }) =>
+      InfoSelectionSet(
+        typename: typename ?? this.typename,
+        height: height ?? this.height,
+        mass: mass ?? this.mass,
+        home: home ?? this.home,
+        planet: planet ?? this.planet,
+      );
+
+  /// Creates a new [InfoSelectionSet] with the specified fields nullified
   ///
-  /// pre-existing values are not overwritten unless `overwrite: true`
+  /// All fields default to `false`, so `field: null` or `field: true` nullifies a field.
+  InfoSelectionSet copyWithout({
+    bool typename = false,
+    bool height = false,
+    bool mass = false,
+    bool home = false,
+    bool planet = false,
+  }) =>
+      InfoSelectionSet(
+        typename: typename == false ? this.typename : null,
+        height: height == false ? this.height : null,
+        mass: mass == false ? this.mass : null,
+        home: home == false ? this.home : null,
+        planet: planet == false ? this.planet : null,
+      );
+
+  /// Creates a new [InfoSelectionSet] with non-null values from [other] as attribute overrides
+  InfoSelectionSet mergedLeftWith(covariant Info other) {
+    assert(other != null, "$this Cannot be merged with null");
+    return copyWith(
+      typename: other.typename,
+      height: other.height,
+      mass: other.mass,
+      home: other.home,
+      planet: other.planet,
+    );
+  }
+
+  /// Alias for [mergedLeftWith]
   @override
-  void addAll(
-    covariant InfoSelectionSet other, {
-    bool overwrite = true,
-  }) {
-    super.addAll(other, overwrite: overwrite);
+  InfoSelectionSet operator <<(covariant Info other) => mergedLeftWith(other);
 
-    if (overwrite != null && overwrite) {
-      planet = other.planet ?? planet;
-    } else {
-      planet ??= other.planet;
-    }
-  }
-
-  factory InfoSelectionSet.fromJson(Map<String, dynamic> json) {
-    InfoSelectionSet instance = _$InfoSelectionSetFromJson(json);
-    final __typename = json['__typename'];
-    instance.typename = __typename;
-
-    return instance;
-  }
+  factory InfoSelectionSet.fromJson(Map<String, dynamic> json) =>
+      _$InfoSelectionSetFromJson(json);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = _$InfoSelectionSetToJson(this);
-    json['__typename'] = typename;
 
     return json;
+  }
+
+  /// Construct a [InfoSelectionSet] from a [Info]
+  factory InfoSelectionSet.from(Info source) {
+    assert(source != null, "Cannot construct InfoSelectionSet from null");
+    return InfoSelectionSet(
+      typename: source.typename,
+      height: source.height,
+      mass: source.mass,
+      home: source.home,
+      planet: source.planet,
+    );
   }
 }

@@ -1,8 +1,18 @@
+@immutable
 {{#if description }}{{ multilineComment description }}{{/if}}
-class {{ className }} {
+class {{ className }} extends Equatable {
   {{#if typeName }}
-  static final String typeName = "{{ typeName }}";
+  static final String schemaTypeName = "{{ typeName }}";
   {{/if}}
+
+  // just to make fromObjectType work with unions
+  @protected
+  {{ className }} get fields => this;
+  @protected
+  {{ className }}.fromFields({{ className }} other):
+    {{#each possibleTypes~}}
+    {{inlineFragmentName this}} = other.{{inlineFragmentName this}}{{#unless @last}},{{/unless}}
+    {{~/each}};
 
   static const possibleTypes = const {
     {{#each possibleTypes~}}
@@ -11,35 +21,40 @@ class {{ className }} {
     {{~/each}}
   };
 
-  {{#each possibleTypes}}
-  covariant {{ this }} {{inlineFragmentName this}};
+  {{#each possibleTypes~}}
+  final {{ this }} {{inlineFragmentName this}};
   {{/each}}
 
+  const {{ className }}({
+    {{#each possibleTypes~}}
+    this.{{inlineFragmentName this}},
+    {{/each}}
+  });
 
-  Object get value => (
-    {{#each possibleTypes~}}
-    {{inlineFragmentName this}}{{#unless @last}} ??
-    {{/unless}}
-    {{~/each}}
-   );
+
+  /// The wrapped value. Will be one of the `possibleTypes`
+  Object get value => {{#each possibleTypes~}}
+    {{inlineFragmentName this}} {{#unless @last}}??{{/unless}}
+    {{~/each}};
+
+  @override
+  List<Object> get props => [value];
   
-  /// Adds all fields from [other] to this `{{ className }}`,
-  /// validating that they are the same type
-  /// 
-  /// pre-existing values are not overwritten unless `overwrite: true`
-  void addAll(covariant {{ className }} other, { bool overwrite = true, }) {
-    assert(other?.value != null, "Cannot add all from null union value into $this from $other");
-    final _v = value;
+  /// Creates a new [{{ className }}] with `value.mergedLeftWith(other.value)`
+  ///
+  /// If [other].value is not the same type, [other] is returned.
+  {{ className }} mergedLeftWith(covariant {{ name }} other) {
+    assert(other?.value != null, "$this Cannot be merged with null value from $other");
     {{#each possibleTypes~}}
-    if (other.{{ inlineFragmentName this}} != null){
-      assert(
-        _v == null || {{ inlineFragmentName this}} != null,
-        "Cannot add all from $other.value of type {{inlineFragmentName this}} into $this.value of type ${_v.runtimeType}",
-      );
-      {{ inlineFragmentName this}}.addAll(other.{{ inlineFragmentName this}}, overwrite: overwrite);
-      return null;
+    if ({{inlineFragmentName this}} != null && other.{{inlineFragmentName this}} != null){
+      return {{../className}}({{inlineFragmentName this}}: {{inlineFragmentName this}}.mergedLeftWith(other.{{inlineFragmentName this}}));
     }
     {{/each}}
+    // merging cannot be done
+    return other;
   }
+
+  /// Alias for [mergedLeftWith]
+  {{ className }} operator <<(covariant {{ className }} other) => mergedLeftWith(other);
 
 }

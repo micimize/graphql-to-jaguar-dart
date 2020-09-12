@@ -4,8 +4,9 @@ This project has been superseded by [`major_graphql`](https://github.com/micimiz
 # graphql-to-dart
 [Custom templates](https://github.com/dotansimha/graphql-code-generator/blob/master/packages/graphql-codegen-generators/CUSTOM_TEMPLATES.md) for [graphql-code-generator](https://github.com/dotansimha/graphql-code-generator) for generating dart PODOs and json_serializable classes
 
-### Beta
-`npm install graphql-to-dart@1.1.5-beta` includes a number of updates, such as:
+### 2.0.0 Beta
+#### This beta makes the api entirely immutable
+`npm install graphql-to-dart@2.0.0-beta5` includes a number of updates, such as:
 * per-operation file generation (probably non-optional)
 *  [`gql_code_gen`](https://github.com/gql-dart/gql/tree/master/gql_code_gen) support via `integrateGqlCodeGenAst`
 * `transformCharacters` support for handling `_underscore_prefixed` fields
@@ -13,6 +14,7 @@ This project has been superseded by [`major_graphql`](https://github.com/micimiz
 * Models graphql-style "inheritance" by defining a protected `_$[Type}Fields` type along with every object type,
   which is then exposed by fragment mixins and selection sets.
 * Fragments are modeled generated as mixins, as well as standalone `FragmentNameSelectionSet` classes
+* all classes are immutable and use the `equatable` package
 
 ## usage
 ```bash
@@ -84,7 +86,7 @@ config:
 
 ```
 Then generate with `yarn gql-gen` (or `gql-gen` if you have it globally installed),
-And theeeen generate the actual json serializers (`json_serializable` is a peer dependency, but on the flutter side, also `gql_code_gen` if you're using the ast integration).
+And theeeen generate the actual json serializers (`equatable` and `json_serializable` are peer dependencies, but on the flutter side, also `gql_code_gen` if you're using the ast integration).
 So:
 ```bash
 yarn gql-gen
@@ -103,6 +105,7 @@ dev_dependencies:
 
 dependencies:
   json_annotation: ^0.2.3
+  equatable: 1.0.2
   # ...
 # ...
 ```
@@ -111,9 +114,11 @@ dependencies:
 
 
 Take a look at the example output to see how it generates code, as well as `src/build-plugin.ts` for the configuration object, which has some docs just aching to be properly generated.
-* all types have [`isValid`, `validate`, `addAll(ThisType other)`, and `copy` helpers](https://github.com/micimize/graphql-to-dart/blob/6aaba6db32c4094df535663f58c7112d17f40c32/example/lib/graphql/schema.dart#L62-L100) 
-* selection set and fragments have [`from(BaseObjectType other)` and `empty` constructors](
-https://github.com/micimize/graphql-to-dart/blob/6aaba6db32c4094df535663f58c7112d17f40c32/example/lib/graphql/hero_for_episode.gql.dart#L66-L75)
+* (almost) all types have
+  * [`isValid`, `validate` helpers](https://github.com/micimize/graphql-to-dart/blob/547142683d6b7da2c1c86e9486f74edd9937e559/example/lib/graphql/schema.dart#L335-L359) 
+  * [`mergedLeftWith(ThisType other)` and `mergedRightWith(ThisType other)` helpers, aliased to the `<<` and `>>` operators respectively](https://github.com/micimize/graphql-to-dart/blob/547142683d6b7da2c1c86e9486f74edd9937e559/example/lib/graphql/schema.dart#L321-L333)
+* selection sets have [`copyWith`](https://github.com/micimize/graphql-to-dart/blob/66795230384bcd8cae9e725ecd694df5b0f95712/example/lib/graphql/hero_for_episode.gql.dart#L95-L114) helpers and a `.partial` constructor
+* For some reason I can't override `copyWith` properly - maybe because of covariant semantics idk.
 
 # NOTES
 * Base types do not currently have json helpers, but it should probably be configurable

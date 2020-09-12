@@ -1,5 +1,6 @@
 import { SafeString } from "handlebars";
-import { resetLogs } from "graphql-codegen-core";
+import { resetLogs, printLogs } from "graphql-codegen-core";
+import * as deepmerge from "deepmerge";
 
 type String = SafeString | string;
 
@@ -25,7 +26,7 @@ export function dedupe<T = string>(arr: T[], hash = JSON.stringify) {
   });
 }
 
-export function arrayify<T>(arr: T | T[]) {
+export function arrayify<T>(arr: T | T[]): T[] {
   return Array.isArray(arr) ? arr : [arr];
 }
 
@@ -58,6 +59,10 @@ export function concat(...args) {
     return [].concat(...args.slice(0, -1));
   }
   return args.slice(0, -1).join("");
+}
+
+function restWithoutContext<T = any>(...args: T[]) {
+  return args.slice(0, -1);
 }
 
 export function eachBackwards(context, options) {
@@ -128,6 +133,9 @@ function _eachInner<I = any>(
   conditional: (item: I) => boolean,
   { prefix = "", suffix = "", delimiter = "", alwaysWrap = false }
 ) {
+  if (!context) {
+    return "";
+  }
   let blockResult = "";
   context.forEach(item => {
     if (conditional(item)) {
@@ -149,14 +157,32 @@ function _eachInner<I = any>(
 
 export function emptySafeEach(
   context: any[],
-  { fn, hash: { required = null, ...hash } }
+  { fn, hash: { required = null, excluding = null, ...hash } }
 ) {
   return _eachInner(
     context,
     fn,
-    item => required == null || item[required],
+    item => required == null || (item[required] && item[required] != excluding),
     hash
   );
+}
+
+export function _deepMergeOnKeys<T = any>(context: T[], keys: string[]) {
+  let identify = (item: T) => JSON.stringify(keys.map(k => item[k]));
+  let uniqueMap = new Map<string, T>();
+  context.forEach(item => {
+    uniqueMap.set(
+      identify(item),
+      deepmerge(uniqueMap.get(identify(item)) || ({} as T), item)
+    );
+  });
+
+  return Array.from(uniqueMap.values());
+}
+
+export function deepMergeOnKeys<T = any>(context: T[], ...args: string[]) {
+  let keys = restWithoutContext(...args);
+  return _deepMergeOnKeys(context, keys);
 }
 
 export function eachUniqueBy(
@@ -164,7 +190,14 @@ export function eachUniqueBy(
   {
     fn,
     inverse,
-    hash: { uniqueField = null, alwaysWrap = true, noDupeSuffix = "", ...hash }
+    hash: {
+      uniqueField = null,
+      excluding = null,
+      required = null,
+      alwaysWrap = true,
+      noDupeSuffix = "",
+      ...hash
+    }
   }
 ) {
   let seen = new Set<string>();
@@ -173,6 +206,13 @@ export function eachUniqueBy(
     context,
     fn,
     item => {
+      if (
+        !item[uniqueField] == null ||
+        item[uniqueField] == excluding ||
+        (required != null && (!item[required] || item[required] == excluding))
+      ) {
+        return false;
+      }
       if (seen.has(item[uniqueField])) {
         dupes.push(item);
         return false;
@@ -189,6 +229,29 @@ export function eachUniqueBy(
   } else {
     blockResult += alwaysWrap || blockResult ? noDupeSuffix : "";
   }
+
+  return blockResult;
+}
+
+export function eachDuplicateBy(
+  context: any[],
+  { fn, hash: { uniqueField = null, alwaysWrap = true, ...hash } }
+) {
+  let seen = new Set<string>();
+  let dupes = [];
+  let blockResult = _eachInner(
+    context,
+    fn,
+    item => {
+      if (seen.has(item[uniqueField])) {
+        return true;
+      } else {
+        seen.add(item[uniqueField]);
+        return false;
+      }
+    },
+    { ...hash, suffix: "", alwaysWrap }
+  );
 
   return blockResult;
 }

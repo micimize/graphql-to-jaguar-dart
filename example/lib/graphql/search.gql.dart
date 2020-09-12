@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
-import './example_mixin.dart';
 import 'package:starwars/graphql/schema.dart';
 
 part 'search.gql.g.dart';
@@ -9,7 +8,7 @@ part 'search.gql.g.dart';
 @JsonSerializable()
 class SearchVariables {
   @JsonKey(required: false, disallowNullValue: false)
-  String text;
+  final String text;
 
   SearchVariables({
     this.text,
@@ -25,28 +24,40 @@ class SearchVariables {
 class Search_StarshipInlineFragment extends Starship {
   static final String schemaTypeName = "Starship";
 
-  @protected
-  String typename;
+  /// The `__typename` meta-field
+  ///
+  /// GraphQL supports type name introspection at any point within a query by the meta-field `__typename: String!` ([spec])
+  ///
+  /// [spec]: https://github.com/graphql/graphql-spec/blob/c7bface58bf6f58cc809f279cba1b6245de914b4/spec/Section%204%20--%20Introspection.md#type-name-introspection)
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  final String typename;
 
   @JsonKey(name: r'id', required: true, disallowNullValue: true)
   String get id => fields.id;
-  set id(String id) => fields.id = id;
+
+  @override
+  List<Object> get props => [
+        ...super.props,
+      ];
+
   Search_StarshipInlineFragment({
+    this.typename,
     @required String id,
   }) : super(
           id: id,
         );
 
-  Search_StarshipInlineFragment.empty();
+  Search_StarshipInlineFragment.fromObjectType(
+    Starship objectType, {
+    this.typename,
+  }) : super.fromFields(objectType.fields);
 
-  /// Creates a copy of this `Search_StarshipInlineFragment`
-  Search_StarshipInlineFragment copy() =>
-      Search_StarshipInlineFragment.empty()..addAll(this);
-
-  /// Copies fields from [other] into a new `Search_StarshipInlineFragment`
-  Search_StarshipInlineFragment.from(Starship other) {
-    addAll(other);
-  }
+  Search_StarshipInlineFragment.partial({
+    this.typename,
+    String id,
+  }) : super(
+          id: id,
+        );
 
   @protected
   Set<String> get missingRequiredFields {
@@ -57,29 +68,49 @@ class Search_StarshipInlineFragment extends Starship {
     return missingFields;
   }
 
-  /// Adds all fields from [other] to this `Search_StarshipInlineFragment`.
+  /// Creates a new [Search_StarshipInlineFragment] with the given non-null values overridden
+  Search_StarshipInlineFragment copyWith({
+    String typename,
+    String id,
+  }) =>
+      Search_StarshipInlineFragment(
+        typename: typename ?? this.typename,
+        id: id ?? this.id,
+      );
+
+  /// Creates a new [Search_StarshipInlineFragment] with the specified fields nullified
   ///
-  /// pre-existing values are not overwritten unless `overwrite: true`
+  /// All fields default to `false`, so `field: null` or `field: true` nullifies a field.
+  Search_StarshipInlineFragment copyWithout({
+    bool typename = false,
+    bool id = false,
+  }) =>
+      Search_StarshipInlineFragment(
+        typename: typename == false ? this.typename : null,
+        id: id == false ? this.id : null,
+      );
+
+  /// Creates a new [Search_StarshipInlineFragment] with non-null values from [other] as attribute overrides
+  Search_StarshipInlineFragment mergedLeftWith(
+      covariant Search_StarshipInlineFragment other) {
+    assert(other != null, "$this Cannot be merged with null");
+    return copyWith(
+      typename: other.typename,
+      id: other.id,
+    );
+  }
+
+  /// Alias for [mergedLeftWith]
   @override
-  void addAll(
-    covariant Search_StarshipInlineFragment other, {
-    bool overwrite = true,
-  }) {
-    super.addAll(other, overwrite: overwrite);
-  }
+  Search_StarshipInlineFragment operator <<(
+          covariant Search_StarshipInlineFragment other) =>
+      mergedLeftWith(other);
 
-  factory Search_StarshipInlineFragment.fromJson(Map<String, dynamic> json) {
-    Search_StarshipInlineFragment instance =
-        _$Search_StarshipInlineFragmentFromJson(json);
-    final __typename = json['__typename'];
-    instance.typename = __typename;
-
-    return instance;
-  }
+  factory Search_StarshipInlineFragment.fromJson(Map<String, dynamic> json) =>
+      _$Search_StarshipInlineFragmentFromJson(json);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = _$Search_StarshipInlineFragmentToJson(this);
-    json['__typename'] = typename;
 
     return json;
   }
@@ -89,21 +120,38 @@ class Search_StarshipInlineFragment extends Starship {
 class SearchSearchCopyForTesting extends SearchResult {
   static final String schemaTypeName = "SearchResult";
 
-  @protected
-  String typename;
+  /// The `__typename` meta-field
+  ///
+  /// GraphQL supports type name introspection at any point within a query by the meta-field `__typename: String!` ([spec])
+  ///
+  /// [spec]: https://github.com/graphql/graphql-spec/blob/c7bface58bf6f58cc809f279cba1b6245de914b4/spec/Section%204%20--%20Introspection.md#type-name-introspection)
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  final String typename;
 
-  SearchSearchCopyForTesting() : super();
+  @JsonKey(ignore: true)
+  final Search_StarshipInlineFragment onStarship;
 
-  SearchSearchCopyForTesting.empty();
+  @override
+  List<Object> get props => [
+        ...super.props,
+        onStarship,
+      ];
 
-  /// Creates a copy of this `SearchSearchCopyForTesting`
-  SearchSearchCopyForTesting copy() =>
-      SearchSearchCopyForTesting.empty()..addAll(this);
+  SearchSearchCopyForTesting({
+    this.typename,
+    this.onStarship,
+  }) : super();
 
-  /// Copies fields from [other] into a new `SearchSearchCopyForTesting`
-  SearchSearchCopyForTesting.from(SearchResult other) {
-    addAll(other);
-  }
+  SearchSearchCopyForTesting.fromObjectType(
+    SearchResult objectType, {
+    this.typename,
+    this.onStarship,
+  }) : super.fromFields(objectType.fields);
+
+  SearchSearchCopyForTesting.partial({
+    this.typename,
+    this.onStarship,
+  }) : super();
 
   @protected
   Set<String> get missingRequiredFields {
@@ -111,40 +159,57 @@ class SearchSearchCopyForTesting extends SearchResult {
     return missingFields;
   }
 
-  /// Adds all fields from [other] to this `SearchSearchCopyForTesting`.
+  /// Creates a new [SearchSearchCopyForTesting] with the given non-null values overridden
+  SearchSearchCopyForTesting copyWith({
+    String typename,
+    Search_StarshipInlineFragment onStarship,
+  }) =>
+      SearchSearchCopyForTesting(
+        typename: typename ?? this.typename,
+        onStarship: onStarship != null
+            ? this.onStarship?.mergedLeftWith(onStarship) ?? onStarship
+            : this.onStarship,
+      );
+
+  /// Creates a new [SearchSearchCopyForTesting] with the specified fields nullified
   ///
-  /// pre-existing values are not overwritten unless `overwrite: true`
+  /// All fields default to `false`, so `field: null` or `field: true` nullifies a field.
+  SearchSearchCopyForTesting copyWithout({
+    bool typename = false,
+    bool onStarship = false,
+  }) =>
+      SearchSearchCopyForTesting(
+        typename: typename == false ? this.typename : null,
+        onStarship: onStarship == false ? this.onStarship : null,
+      );
+
+  /// Creates a new [SearchSearchCopyForTesting] with non-null values from [other] as attribute overrides
+  SearchSearchCopyForTesting mergedLeftWith(
+      covariant SearchSearchCopyForTesting other) {
+    assert(other != null, "$this Cannot be merged with null");
+    return copyWith(
+      typename: other.typename,
+      onStarship: other.onStarship,
+    );
+  }
+
+  /// Alias for [mergedLeftWith]
   @override
-  void addAll(
-    covariant SearchSearchCopyForTesting other, {
-    bool overwrite = true,
-  }) {
-    super.addAll(other, overwrite: overwrite);
+  SearchSearchCopyForTesting operator <<(
+          covariant SearchSearchCopyForTesting other) =>
+      mergedLeftWith(other);
 
-    if (other.onStarship != null) {
-      onStarship ??= Search_StarshipInlineFragment.empty();
-      onStarship.addAll(other.onStarship, overwrite: overwrite);
-    }
-  }
-
-  @JsonKey(ignore: true)
-  Search_StarshipInlineFragment onStarship;
-
-  factory SearchSearchCopyForTesting.fromJson(Map<String, dynamic> json) {
-    SearchSearchCopyForTesting instance =
-        _$SearchSearchCopyForTestingFromJson(json);
-    final __typename = json['__typename'];
-    instance.typename = __typename;
-
-    if (Search_StarshipInlineFragment.schemaTypeName == __typename) {
-      instance.onStarship = Search_StarshipInlineFragment.fromJson(json);
-    }
-    return instance;
-  }
+  factory SearchSearchCopyForTesting.fromJson(Map<String, dynamic> json) =>
+      _$SearchSearchCopyForTestingFromJson(json).copyWith(
+        onStarship:
+            Search_StarshipInlineFragment.schemaTypeName == json['__typename']
+                ? Search_StarshipInlineFragment.fromJson(json)
+                : null,
+      );
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = _$SearchSearchCopyForTestingToJson(this);
-    json['__typename'] = typename;
+
     if (onStarship != null) {
       json.addAll(onStarship.toJson());
     }
@@ -157,28 +222,40 @@ class SearchSearchCopyForTesting extends SearchResult {
 class SearchStarshipInlineFragment extends Starship {
   static final String schemaTypeName = "Starship";
 
-  @protected
-  String typename;
+  /// The `__typename` meta-field
+  ///
+  /// GraphQL supports type name introspection at any point within a query by the meta-field `__typename: String!` ([spec])
+  ///
+  /// [spec]: https://github.com/graphql/graphql-spec/blob/c7bface58bf6f58cc809f279cba1b6245de914b4/spec/Section%204%20--%20Introspection.md#type-name-introspection)
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  final String typename;
 
   @JsonKey(name: r'id', required: true, disallowNullValue: true)
   String get id => fields.id;
-  set id(String id) => fields.id = id;
+
+  @override
+  List<Object> get props => [
+        ...super.props,
+      ];
+
   SearchStarshipInlineFragment({
+    this.typename,
     @required String id,
   }) : super(
           id: id,
         );
 
-  SearchStarshipInlineFragment.empty();
+  SearchStarshipInlineFragment.fromObjectType(
+    Starship objectType, {
+    this.typename,
+  }) : super.fromFields(objectType.fields);
 
-  /// Creates a copy of this `SearchStarshipInlineFragment`
-  SearchStarshipInlineFragment copy() =>
-      SearchStarshipInlineFragment.empty()..addAll(this);
-
-  /// Copies fields from [other] into a new `SearchStarshipInlineFragment`
-  SearchStarshipInlineFragment.from(Starship other) {
-    addAll(other);
-  }
+  SearchStarshipInlineFragment.partial({
+    this.typename,
+    String id,
+  }) : super(
+          id: id,
+        );
 
   @protected
   Set<String> get missingRequiredFields {
@@ -189,29 +266,49 @@ class SearchStarshipInlineFragment extends Starship {
     return missingFields;
   }
 
-  /// Adds all fields from [other] to this `SearchStarshipInlineFragment`.
+  /// Creates a new [SearchStarshipInlineFragment] with the given non-null values overridden
+  SearchStarshipInlineFragment copyWith({
+    String typename,
+    String id,
+  }) =>
+      SearchStarshipInlineFragment(
+        typename: typename ?? this.typename,
+        id: id ?? this.id,
+      );
+
+  /// Creates a new [SearchStarshipInlineFragment] with the specified fields nullified
   ///
-  /// pre-existing values are not overwritten unless `overwrite: true`
+  /// All fields default to `false`, so `field: null` or `field: true` nullifies a field.
+  SearchStarshipInlineFragment copyWithout({
+    bool typename = false,
+    bool id = false,
+  }) =>
+      SearchStarshipInlineFragment(
+        typename: typename == false ? this.typename : null,
+        id: id == false ? this.id : null,
+      );
+
+  /// Creates a new [SearchStarshipInlineFragment] with non-null values from [other] as attribute overrides
+  SearchStarshipInlineFragment mergedLeftWith(
+      covariant SearchStarshipInlineFragment other) {
+    assert(other != null, "$this Cannot be merged with null");
+    return copyWith(
+      typename: other.typename,
+      id: other.id,
+    );
+  }
+
+  /// Alias for [mergedLeftWith]
   @override
-  void addAll(
-    covariant SearchStarshipInlineFragment other, {
-    bool overwrite = true,
-  }) {
-    super.addAll(other, overwrite: overwrite);
-  }
+  SearchStarshipInlineFragment operator <<(
+          covariant SearchStarshipInlineFragment other) =>
+      mergedLeftWith(other);
 
-  factory SearchStarshipInlineFragment.fromJson(Map<String, dynamic> json) {
-    SearchStarshipInlineFragment instance =
-        _$SearchStarshipInlineFragmentFromJson(json);
-    final __typename = json['__typename'];
-    instance.typename = __typename;
-
-    return instance;
-  }
+  factory SearchStarshipInlineFragment.fromJson(Map<String, dynamic> json) =>
+      _$SearchStarshipInlineFragmentFromJson(json);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = _$SearchStarshipInlineFragmentToJson(this);
-    json['__typename'] = typename;
 
     return json;
   }
@@ -221,20 +318,38 @@ class SearchStarshipInlineFragment extends Starship {
 class SearchSearch extends SearchResult {
   static final String schemaTypeName = "SearchResult";
 
-  @protected
-  String typename;
+  /// The `__typename` meta-field
+  ///
+  /// GraphQL supports type name introspection at any point within a query by the meta-field `__typename: String!` ([spec])
+  ///
+  /// [spec]: https://github.com/graphql/graphql-spec/blob/c7bface58bf6f58cc809f279cba1b6245de914b4/spec/Section%204%20--%20Introspection.md#type-name-introspection)
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  final String typename;
 
-  SearchSearch() : super();
+  @JsonKey(ignore: true)
+  final SearchStarshipInlineFragment onStarship;
 
-  SearchSearch.empty();
+  @override
+  List<Object> get props => [
+        ...super.props,
+        onStarship,
+      ];
 
-  /// Creates a copy of this `SearchSearch`
-  SearchSearch copy() => SearchSearch.empty()..addAll(this);
+  SearchSearch({
+    this.typename,
+    this.onStarship,
+  }) : super();
 
-  /// Copies fields from [other] into a new `SearchSearch`
-  SearchSearch.from(SearchResult other) {
-    addAll(other);
-  }
+  SearchSearch.fromObjectType(
+    SearchResult objectType, {
+    this.typename,
+    this.onStarship,
+  }) : super.fromFields(objectType.fields);
+
+  SearchSearch.partial({
+    this.typename,
+    this.onStarship,
+  }) : super();
 
   @protected
   Set<String> get missingRequiredFields {
@@ -242,39 +357,55 @@ class SearchSearch extends SearchResult {
     return missingFields;
   }
 
-  /// Adds all fields from [other] to this `SearchSearch`.
+  /// Creates a new [SearchSearch] with the given non-null values overridden
+  SearchSearch copyWith({
+    String typename,
+    SearchStarshipInlineFragment onStarship,
+  }) =>
+      SearchSearch(
+        typename: typename ?? this.typename,
+        onStarship: onStarship != null
+            ? this.onStarship?.mergedLeftWith(onStarship) ?? onStarship
+            : this.onStarship,
+      );
+
+  /// Creates a new [SearchSearch] with the specified fields nullified
   ///
-  /// pre-existing values are not overwritten unless `overwrite: true`
+  /// All fields default to `false`, so `field: null` or `field: true` nullifies a field.
+  SearchSearch copyWithout({
+    bool typename = false,
+    bool onStarship = false,
+  }) =>
+      SearchSearch(
+        typename: typename == false ? this.typename : null,
+        onStarship: onStarship == false ? this.onStarship : null,
+      );
+
+  /// Creates a new [SearchSearch] with non-null values from [other] as attribute overrides
+  SearchSearch mergedLeftWith(covariant SearchSearch other) {
+    assert(other != null, "$this Cannot be merged with null");
+    return copyWith(
+      typename: other.typename,
+      onStarship: other.onStarship,
+    );
+  }
+
+  /// Alias for [mergedLeftWith]
   @override
-  void addAll(
-    covariant SearchSearch other, {
-    bool overwrite = true,
-  }) {
-    super.addAll(other, overwrite: overwrite);
+  SearchSearch operator <<(covariant SearchSearch other) =>
+      mergedLeftWith(other);
 
-    if (other.onStarship != null) {
-      onStarship ??= SearchStarshipInlineFragment.empty();
-      onStarship.addAll(other.onStarship, overwrite: overwrite);
-    }
-  }
-
-  @JsonKey(ignore: true)
-  SearchStarshipInlineFragment onStarship;
-
-  factory SearchSearch.fromJson(Map<String, dynamic> json) {
-    SearchSearch instance = _$SearchSearchFromJson(json);
-    final __typename = json['__typename'];
-    instance.typename = __typename;
-
-    if (SearchStarshipInlineFragment.schemaTypeName == __typename) {
-      instance.onStarship = SearchStarshipInlineFragment.fromJson(json);
-    }
-    return instance;
-  }
+  factory SearchSearch.fromJson(Map<String, dynamic> json) =>
+      _$SearchSearchFromJson(json).copyWith(
+        onStarship:
+            SearchStarshipInlineFragment.schemaTypeName == json['__typename']
+                ? SearchStarshipInlineFragment.fromJson(json)
+                : null,
+      );
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = _$SearchSearchToJson(this);
-    json['__typename'] = typename;
+
     if (onStarship != null) {
       json.addAll(onStarship.toJson());
     }
@@ -287,36 +418,49 @@ class SearchSearch extends SearchResult {
 class SearchQuery extends Query {
   static final String schemaTypeName = "query";
 
-  @protected
-  String typename;
+  /// The `__typename` meta-field
+  ///
+  /// GraphQL supports type name introspection at any point within a query by the meta-field `__typename: String!` ([spec])
+  ///
+  /// [spec]: https://github.com/graphql/graphql-spec/blob/c7bface58bf6f58cc809f279cba1b6245de914b4/spec/Section%204%20--%20Introspection.md#type-name-introspection)
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  final String typename;
 
   @JsonKey(name: r'search', required: false, disallowNullValue: false)
   List<SearchSearch> get search => fields.search;
-  set search(List<SearchSearch> search) => fields.search = search;
   @JsonKey(
       name: r'__searchCopyForTesting',
       required: false,
       disallowNullValue: false)
-  List<SearchSearchCopyForTesting> searchCopyForTesting;
+  final List<SearchSearchCopyForTesting> searchCopyForTesting;
+
+  @override
+  List<Object> get props => [
+        ...super.props,
+        searchCopyForTesting,
+      ];
 
   SearchQuery({
+    this.typename,
     List<SearchSearch> search,
-    List<SearchSearchCopyForTesting> searchCopyForTesting,
+    this.searchCopyForTesting,
   }) : super(
           search: search,
-        ) {
-    this.searchCopyForTesting = searchCopyForTesting;
-  }
+        );
 
-  SearchQuery.empty();
+  SearchQuery.fromObjectType(
+    Query objectType, {
+    this.typename,
+    this.searchCopyForTesting,
+  }) : super.fromFields(objectType.fields);
 
-  /// Creates a copy of this `SearchQuery`
-  SearchQuery copy() => SearchQuery.empty()..addAll(this);
-
-  /// Copies fields from [other] into a new `SearchQuery`
-  SearchQuery.from(Query other) {
-    addAll(other);
-  }
+  SearchQuery.partial({
+    this.typename,
+    List<SearchSearch> search,
+    this.searchCopyForTesting,
+  }) : super(
+          search: search,
+        );
 
   @protected
   Set<String> get missingRequiredFields {
@@ -324,34 +468,52 @@ class SearchQuery extends Query {
     return missingFields;
   }
 
-  /// Adds all fields from [other] to this `SearchQuery`.
+  /// Creates a new [SearchQuery] with the given non-null values overridden
+  SearchQuery copyWith({
+    String typename,
+    List<SearchSearch> search,
+    List<SearchSearchCopyForTesting> searchCopyForTesting,
+  }) =>
+      SearchQuery(
+        typename: typename ?? this.typename,
+        search: search ?? this.search,
+        searchCopyForTesting: searchCopyForTesting ?? this.searchCopyForTesting,
+      );
+
+  /// Creates a new [SearchQuery] with the specified fields nullified
   ///
-  /// pre-existing values are not overwritten unless `overwrite: true`
+  /// All fields default to `false`, so `field: null` or `field: true` nullifies a field.
+  SearchQuery copyWithout({
+    bool typename = false,
+    bool search = false,
+    bool searchCopyForTesting = false,
+  }) =>
+      SearchQuery(
+        typename: typename == false ? this.typename : null,
+        search: search == false ? this.search : null,
+        searchCopyForTesting:
+            searchCopyForTesting == false ? this.searchCopyForTesting : null,
+      );
+
+  /// Creates a new [SearchQuery] with non-null values from [other] as attribute overrides
+  SearchQuery mergedLeftWith(covariant SearchQuery other) {
+    assert(other != null, "$this Cannot be merged with null");
+    return copyWith(
+      typename: other.typename,
+      search: other.search,
+      searchCopyForTesting: other.searchCopyForTesting,
+    );
+  }
+
+  /// Alias for [mergedLeftWith]
   @override
-  void addAll(
-    covariant SearchQuery other, {
-    bool overwrite = true,
-  }) {
-    super.addAll(other, overwrite: overwrite);
+  SearchQuery operator <<(covariant SearchQuery other) => mergedLeftWith(other);
 
-    if (overwrite != null && overwrite) {
-      searchCopyForTesting = other.searchCopyForTesting ?? searchCopyForTesting;
-    } else {
-      searchCopyForTesting ??= other.searchCopyForTesting;
-    }
-  }
-
-  factory SearchQuery.fromJson(Map<String, dynamic> json) {
-    SearchQuery instance = _$SearchQueryFromJson(json);
-    final __typename = json['__typename'];
-    instance.typename = __typename;
-
-    return instance;
-  }
+  factory SearchQuery.fromJson(Map<String, dynamic> json) =>
+      _$SearchQueryFromJson(json);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = _$SearchQueryToJson(this);
-    json['__typename'] = typename;
 
     return json;
   }

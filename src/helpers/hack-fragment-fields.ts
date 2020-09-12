@@ -1,4 +1,8 @@
-import { capitalize, dedupe } from "./utils";
+import {
+  capitalize,
+  dedupe,
+  _deepMergeOnKeys as deepMergeOnKeys
+} from "./utils";
 
 var fragmentFields = {};
 
@@ -58,12 +62,13 @@ export default function hackFragmentFields(
 
   if (action === "get") {
     assert(Array.isArray(fragments), { action, fragments });
-
-    return dedupe(
+    //dedupe(
+    return deepMergeOnKeys(
       fragments.reduce(
         (fragFields, frag) => [...fragFields, ...getFields(frag.fragmentName)],
         fields
-      )
+      ),
+      ["schemaFieldName", "name"]
     );
   }
   throw Error(`invalid hackFragmentFields action ${action}`);

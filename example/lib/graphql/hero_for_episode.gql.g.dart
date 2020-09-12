@@ -71,15 +71,15 @@ HeroForEpisodeHumanInlineFragment _$HeroForEpisodeHumanInlineFragmentFromJson(
     Map<String, dynamic> json) {
   $checkKeys(json,
       requiredKeys: const ['appearsIn'],
-      disallowNullValues: const ['appearsIn']);
+      disallowNullValues: const ['__typename', 'appearsIn']);
   return HeroForEpisodeHumanInlineFragment(
+    typename: json['__typename'] as String,
     appearsIn: (json['appearsIn'] as List)
         ?.map((e) => _$enumDecodeNullable(_$EpisodeEnumMap, e))
         ?.toList(),
     height: (json['height'] as num)?.toDouble(),
     mass: (json['mass'] as num)?.toDouble(),
     home: json['home'] as String,
-    planet: json['planet'] as String,
     friends: (json['friends'] as List)
         ?.map((e) => e == null
             ? null
@@ -90,6 +90,7 @@ HeroForEpisodeHumanInlineFragment _$HeroForEpisodeHumanInlineFragmentFromJson(
             ? null
             : RelationshipsStarships.fromJson(e as Map<String, dynamic>))
         ?.toList(),
+    planet: json['planet'] as String,
   );
 }
 
@@ -101,7 +102,6 @@ Map<String, dynamic> _$HeroForEpisodeHumanInlineFragmentToJson(
     'height': instance.height,
     'mass': instance.mass,
     'home': instance.home,
-    'planet': instance.planet,
   };
 
   void writeNotNull(String key, dynamic value) {
@@ -110,28 +110,43 @@ Map<String, dynamic> _$HeroForEpisodeHumanInlineFragmentToJson(
     }
   }
 
+  writeNotNull('__typename', instance.typename);
   writeNotNull('appearsIn',
       instance.appearsIn?.map((e) => _$EpisodeEnumMap[e])?.toList());
+  val['planet'] = instance.planet;
   return val;
 }
 
 HeroForEpisodeDroidInlineFragment _$HeroForEpisodeDroidInlineFragmentFromJson(
     Map<String, dynamic> json) {
+  $checkKeys(json, disallowNullValues: const ['__typename']);
   return HeroForEpisodeDroidInlineFragment(
+    typename: json['__typename'] as String,
     primaryFunction: json['primaryFunction'] as String,
   );
 }
 
 Map<String, dynamic> _$HeroForEpisodeDroidInlineFragmentToJson(
-        HeroForEpisodeDroidInlineFragment instance) =>
-    <String, dynamic>{
-      'primaryFunction': instance.primaryFunction,
-    };
+    HeroForEpisodeDroidInlineFragment instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('__typename', instance.typename);
+  val['primaryFunction'] = instance.primaryFunction;
+  return val;
+}
 
 HeroForEpisodeHero _$HeroForEpisodeHeroFromJson(Map<String, dynamic> json) {
   $checkKeys(json,
-      requiredKeys: const ['name'], disallowNullValues: const ['name']);
+      requiredKeys: const ['name'],
+      disallowNullValues: const ['__typename', 'name']);
   return HeroForEpisodeHero(
+    typename: json['__typename'] as String,
     name: json['name'] as String,
   );
 }
@@ -145,20 +160,31 @@ Map<String, dynamic> _$HeroForEpisodeHeroToJson(HeroForEpisodeHero instance) {
     }
   }
 
+  writeNotNull('__typename', instance.typename);
   writeNotNull('name', instance.name);
   return val;
 }
 
 HeroForEpisodeQuery _$HeroForEpisodeQueryFromJson(Map<String, dynamic> json) {
+  $checkKeys(json, disallowNullValues: const ['__typename']);
   return HeroForEpisodeQuery(
+    typename: json['__typename'] as String,
     hero: json['hero'] == null
         ? null
         : HeroForEpisodeHero.fromJson(json['hero'] as Map<String, dynamic>),
   );
 }
 
-Map<String, dynamic> _$HeroForEpisodeQueryToJson(
-        HeroForEpisodeQuery instance) =>
-    <String, dynamic>{
-      'hero': instance.hero?.toJson(),
-    };
+Map<String, dynamic> _$HeroForEpisodeQueryToJson(HeroForEpisodeQuery instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('__typename', instance.typename);
+  val['hero'] = instance.hero?.toJson();
+  return val;
+}

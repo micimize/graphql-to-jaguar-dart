@@ -3,6 +3,8 @@
   className=(concat (toPascalCase name) "Variables")
 }}
 
+{{!--#withFragmentPaths this --}}
+
 {{#eachBackwards innerModels }}
 {{~#unless (
   ignoreType
@@ -11,6 +13,8 @@
       schemaBaseType
       @root.config.irreducibleTypes
 )}}
+
+{{ logThis }}
 
 {{> selectionSetClass
       typeName=schemaBaseType
@@ -39,3 +43,5 @@
       contextName=(toPascalCase name)
       inlineFragments=inlineFragments
 }}
+
+{{!--/withFragmentPaths --}}

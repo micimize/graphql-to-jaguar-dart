@@ -14,7 +14,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -26,6 +26,7 @@ dependencies:
 
   json_annotation: ^3.0.0
   graphql_flutter: ^2.1.1-beta.4
+  equatable: 1.0.2
     #path: /Users/mjr/Documents/code/libraries/graphql-flutter
     #git:
     #  url: https://github.com/micimize/graphql-flutter.git

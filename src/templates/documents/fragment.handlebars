@@ -2,24 +2,27 @@
     Leaving external mixins out of fragments because it overcomplicates things.  
     Because "mixin on BaseType, Foo, Bar" basically defines a multi-parent interface
     mixins=(resolveMixins fields)
+
+    We can't use FragmentSelectionSet as atters, so we have to settle for Mixins,
+    which means no `copyWith`
 --}}
 {{#*inline "fragmentMixin" ~}}
 {{ multilineComment description }}
 /// See [{{ className }}SelectionSet] for the full stand-alone class
-mixin {{ className }} {{
+@JsonSerializable(createFactory: false)
+mixin {{className}} {{
   classExtends
     onMixin="true"
     baseType=typeName
     mixins=(resolveMixins fields)
     fragments=fragmentsSpread
 }} {
-  static final String typeName = "{{ typeName }}";
+  static final String schemaTypeName = "{{ typeName }}";
 
-  {{> selectionSet }}
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  String get {{dartName @root.config.typenameField}};
 
-  /// Copies fields from [other] into a new `{{ className }}`
-  static {{concat className 'SelectionSet'}} from({{ toPascalCase typeName }} other) =>
-    {{concat className 'SelectionSet'}}.from(other);
+  {{> selectionSet this dupeQualifier='get' }}
 
   static {{concat className 'SelectionSet'}} fromJson(Map<String, dynamic> json) =>
     {{concat className 'SelectionSet'}}.fromJson(json);
@@ -37,6 +40,7 @@ mixin {{ className }} {{
       inlineFragments=inlineFragments
       fields=''
       allFields=(hackFragmentFields "get" fragments=fragmentsSpread fields=fields)
+      selectionSetOf=className
 }}
 {{~/inline~}}
 
@@ -63,9 +67,9 @@ mixin {{ className }} {{
 {{> selectionSetClass
       className=(concat (toPascalCase ../name) modelType)
       typeName=schemaBaseType
+      fields=fields
       fragmentsSpread=fragmentsSpread
       inlineFragments=inlineFragments
-      fields=fields
       allFields=(hackFragmentFields "get" fragments=fragmentsSpread fields=fields)
       contextModels=../innerModels
       contextName=(toPascalCase ../name)

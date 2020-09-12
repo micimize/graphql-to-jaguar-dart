@@ -1,3 +1,7 @@
+{{#*inline "nullify" ~}}
+{{dartName this}}: {{dartName this}} == false ? this.{{dartName this}} : null
+{{~/inline}}
+
 @JsonSerializable()
 class {{ className }} {{
 
@@ -12,56 +16,119 @@ class {{ className }} {{
   static final String schemaTypeName = "{{ typeName }}";
   {{/if}}
 
-  {{#if @root.config.typenameField }}
-  @protected
-  String {{ dartName @root.config.typenameField }};
-  {{/if}}
+  /// The `__typename` meta-field 
+  ///
+  /// GraphQL supports type name introspection at any point within a query by the meta-field `__typename: String!` ([spec])
+  ///
+  /// [spec]: https://github.com/graphql/graphql-spec/blob/c7bface58bf6f58cc809f279cba1b6245de914b4/spec/Section%204%20--%20Introspection.md#type-name-introspection)
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  final String {{dartName @root.config.typenameField}};
 
-  {{> selectionSet }}
+  {{> selectionSet this excludeDupes='true' }}
 
-  {{className}}( 
-    {{#emptySafeEach allFields
-      required='name'
-      prefix='{'
-      suffix='}'
-    }}
-      {{#if isRequired }}@required {{/if~}}
+  {{~#eachDuplicateBy allFields uniqueField='schemaFieldName'}}
+  @JsonKey(name: r'{{name}}', required: {{isRequired}}, disallowNullValue: {{isRequired}})
+  {{ resolveType type
+      'final'
+      ../contextName
+      ../contextModels
+      isArray
+      raw
+      name
+  }} {{ dartName name }};
+  {{/eachDuplicateBy}}
+  
+
+  {{#if hasInlineFragments~}}
+  {{#each inlineFragments}}
+  @JsonKey(ignore: true)
+  final {{ concat ../contextName name }} {{ inlineFragmentName name}};
+  {{/each}}
+  {{~/if}}
+
+  @override
+  List<Object> get props => [
+    ...super.props,
+    {{~#eachDuplicateBy allFields uniqueField='schemaFieldName'}}
+    {{ dartName name }},
+    {{/eachDuplicateBy~}}
+    {{#if hasInlineFragments~}}
+    {{#each inlineFragments}}
+    {{ inlineFragmentName name}},
+    {{/each}}
+    {{~/if}}
+  ];
+
+  {{className}}({
+    this.{{dartName @root.config.typenameField}},
+    {{#each inlineFragments~}}
+    this.{{ inlineFragmentName name}},
+    {{/each}}
+    {{#eachUniqueBy allFields uniqueField='schemaFieldName' required='name' excluding='__typename' }}
+      {{#if isRequired }}@required {{/if}}
       {{ resolveType type
-          isRequired
+          'inline'
           (takeFirst contextName ../contextName)
           (takeFirst contextModels ../contextModels)
           isArray
           raw
           ../name
       }} {{dartName name}},
-    {{/emptySafeEach}}
-  ): {{#eachUniqueBy allFields uniqueField='schemaFieldName' prefix='super(' noDupeSuffix=');'}}
-      {{dartName schemaFieldName}}: {{dartName name}},
-    {{else}}) {
-      {{#each this}}
-        this.{{dartName name}} = {{dartName name}};
+      {{~else~}}
+      {{~#each this}}
+      this.{{dartName name}},
       {{/each}}
-    }
-  {{/eachUniqueBy}}{{!-- coupled to the same eachUniqueBy in selectionSet --}}
+    {{/eachUniqueBy}} {{!-- VV coupled to the same eachUniqueBy in selectionSet --}}
+  }): super(
+      {{~#eachUniqueBy allFields uniqueField='schemaFieldName'}}
+      {{dartName schemaFieldName}}: {{dartName name}},
+      {{/eachUniqueBy~}}
+    );
 
-  {{className}}.empty();
+  {{ className }}.fromObjectType({{ toPascalCase typeName }} objectType, {
+    this.{{dartName @root.config.typenameField}},
+    {{#each inlineFragments~}}
+    this.{{ inlineFragmentName name}},
+    {{/each}}
+    {{~#eachDuplicateBy allFields uniqueField='schemaFieldName'}}
+    this.{{dartName name}},
+    {{/eachDuplicateBy ~}}
+  }): super.fromFields(objectType.fields);
 
-  /// Creates a copy of this `{{ className }}`
-  {{ className }} copy() => {{className}}.empty()..addAll(this);
 
-  /// Copies fields from [other] into a new `{{ className }}`
-  {{className}}.from({{ toPascalCase typeName }} other) {
-    addAll(other);
-  }
+  {{className}}.partial({
+    this.{{dartName @root.config.typenameField}},
+    {{#each inlineFragments~}}
+    this.{{ inlineFragmentName name}},
+    {{/each}}
+    {{#eachUniqueBy allFields uniqueField='schemaFieldName' required='name' excluding='__typename' }}
+      {{ resolveType type
+          'inline'
+          (takeFirst contextName ../contextName)
+          (takeFirst contextModels ../contextModels)
+          isArray
+          raw
+          ../name
+      }} {{dartName name}},
+      {{~else~}}
+      {{~#each this}}
+      this.{{dartName name}},
+      {{/each}}
+    {{/eachUniqueBy}} {{!-- VV coupled to the same eachUniqueBy in selectionSet --}}
+  }): super(
+      {{~#eachUniqueBy allFields uniqueField='schemaFieldName'}}
+      {{dartName schemaFieldName}}: {{dartName name}},
+      {{/eachUniqueBy~}}
+    );
 
   @protected
   Set<String> get missingRequiredFields {
     Set<String> missingFields = Set();
     {{#each allFields}}
     {{~#if isRequired}}
-    if ({{ camelCase (dartName name) }} == null){
+    if ({{ dartName name }} == null){
       missingFields.add("
-      {{~ camelCase (dartName name) ~}}
+      {{~ dartName name ~}}
       {{~#if isAliased}} aliased from {{ dartName schemaFieldName }}
       {{~/if~}}
       ");
@@ -71,85 +138,90 @@ class {{ className }} {{
     return missingFields;
   }
 
-  {{!--
-  {{#if hasInlineFragments~}}
-  /// Adds all fields from [other] to this `{{ className }}`.
-  /// 
-  /// pre-existing values are not overwritten unless `overwrite: true`
-  @override
-  void addAll(covariant {{ className }} other, { bool overwrite = true, }) {
-    super.addAll(other, overwrite: overwrite);
-    {{#each inlineFragments}}
-    if(other.{{ inlineFragmentName name}} != null){
-      {{inlineFragmentName name}}..addAll(other.{{ inlineFragmentName name}});
-    }
-    {{/each}}
-  }
-  {{~/if}}
-  --}}
-  /// Adds all fields from [other] to this `{{ className }}`.
-  /// 
-  /// pre-existing values are not overwritten unless `overwrite: true`
-  @override
-  void addAll(covariant {{ className }} other, { bool overwrite = true, }) {
-    super.addAll(other, overwrite: overwrite);
-    {{#eachUniqueBy allFields uniqueField='schemaFieldName'}}{{else}}
-    if (overwrite != null && overwrite){
-      {{#each this}}{{#if name}}
-      {{ dartName name }} = other.{{ dartName name }} ?? {{ dartName name }};
-      {{~/if}}{{/each}}
-    } else {
-      {{#each this}}{{#if name}}
-      {{ dartName name }} ??= other.{{ dartName name }};
-      {{~/if}}{{/each}}
-    }
-    {{/eachUniqueBy}}
-
-    {{#each inlineFragments}}
-    if(other.{{ inlineFragmentName name}} != null){
-      {{#if isArray}}
-      {{inlineFragmentName name}} = (overwrite ?? true)
-        ? [...other.{{ inlineFragmentName name}}]
-        : ({{inlineFragmentName name}} ?? [...other.{{ inlineFragmentName name}}]);
-      {{else}}
-      {{inlineFragmentName name}} ??= {{ concat ../contextName name }}.empty();
-      {{inlineFragmentName name}}.addAll(other.{{ inlineFragmentName name}}, overwrite: overwrite);
-      {{/if}}
-    }
-    {{/each}}
-
-  }
-
-
-  {{#if hasInlineFragments~}}
-  {{#each inlineFragments}}
-  @JsonKey(ignore: true)
-  {{ concat ../contextName name }} {{ inlineFragmentName name}};
-  {{/each}}
-  {{~/if}}
-
-  factory {{className}}.fromJson(Map<String, dynamic> json) {
-    {{className}} instance = _${{className}}FromJson(json);
-    {{#if @root.config.typenameField~}}
-      final __typename = json['{{ @root.config.typenameField }}'];
-      instance.{{ dartName @root.config.typenameField }} = __typename;
-
-      {{#if hasInlineFragments~}}
-      {{#each inlineFragments}}
-      if({{ concat ../contextName name }}.schemaTypeName == __typename){
-        instance.{{ inlineFragmentName name}} = {{ concat ../contextName name }}.fromJson(json);
-      }
-      {{/each}}
+  /// Creates a new [{{ className }}] with the given non-null values overridden
+  {{ className }} copyWith({
+    String {{dartName @root.config.typenameField}},
+    {{#each inlineFragments~}}
+    {{ concat ../contextName name }} {{ inlineFragmentName name}},
+    {{~/each}}
+    {{#emptySafeEach allFields required='name' excluding='__typename' }}
+      {{ resolveType type
+          'inline'
+          (takeFirst contextName ../contextName)
+          (takeFirst contextModels ../contextModels)
+          isArray
+          raw
+          ../name
+      }} {{dartName name}},
+    {{/emptySafeEach}}
+  }) => {{ className }}(
+    {{dartName @root.config.typenameField}}: {{dartName @root.config.typenameField}} ?? this.{{dartName @root.config.typenameField}},
+    {{#each inlineFragments~}}
+    {{ inlineFragmentName name}}: {{ inlineFragmentName name}} != null ?
+      {{#if isArray~}}
+      other.{{ inlineFragmentName name}}
+      {{~else~}}
+      this.{{ inlineFragmentName name}}?.mergedLeftWith({{ inlineFragmentName name}}) ?? {{ inlineFragmentName name}}
       {{~/if}}
-    {{~/if}}
-    return instance;
+      : this.{{ inlineFragmentName name}},
+    {{~/each}}
+    {{#emptySafeEach allFields required='name' excluding='__typename' }}
+      {{ dartName name }}: {{ dartName name }} ?? this.{{ dartName name }},
+    {{/emptySafeEach}}
+  );
+
+  /// Creates a new [{{ className }}] with the specified fields nullified
+  ///
+  /// All fields default to `false`, so `field: null` or `field: true` nullifies a field.
+  {{ className }} copyWithout({
+    bool {{dartName @root.config.typenameField}} = false,
+    {{#each inlineFragments~}}
+    bool {{ inlineFragmentName name}} = false,
+    {{~/each}}
+    {{#emptySafeEach allFields required='name' excluding='__typename' }}
+    bool {{dartName name}} = false,
+    {{/emptySafeEach}}
+  }) => {{ className }}(
+    {{> nullify @root.config.typenameField }},
+    {{#each inlineFragments~}}
+    {{> nullify (inlineFragmentName name) }},
+    {{~/each}}
+    {{#emptySafeEach allFields required='name' excluding='__typename' }}
+    {{> nullify name }},
+    {{/emptySafeEach}}
+  );
+
+  /// Creates a new [{{ className }}] with non-null values from [other] as attribute overrides
+  {{ className }} mergedLeftWith(covariant {{ takeFirst selectionSetOf className }} other) {
+    assert(other != null, "$this Cannot be merged with null");
+    return copyWith(
+      {{dartName @root.config.typenameField}}: other.{{dartName @root.config.typenameField}},
+      {{#each inlineFragments~}}
+      {{ inlineFragmentName name}}: other.{{ inlineFragmentName name}},
+      {{~/each}}
+      {{#emptySafeEach allFields required='name' excluding='__typename' }}
+      {{ dartName name }}: other.{{ dartName name }},
+      {{/emptySafeEach}}
+    );
   }
+
+  /// Alias for [mergedLeftWith]
+  @override
+  {{ className }} operator <<(covariant {{ takeFirst selectionSetOf className }} other) => mergedLeftWith(other);
+
+  factory {{className}}.fromJson(Map<String, dynamic> json) =>
+     _${{className}}FromJson(json){{#if hasInlineFragments~}}
+      .copyWith(
+        {{~#each inlineFragments}}
+        {{ inlineFragmentName name}}: {{ concat ../contextName name }}.schemaTypeName == json['__typename']
+          ? {{ concat ../contextName name }}.fromJson(json)
+          : null,
+        {{/each}}
+      )
+      {{~/if}};
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = _${{className}}ToJson(this);
-    {{#if @root.config.typenameField~}}
-    json['{{@root.config.typenameField }}'] = {{ dartName @root.config.typenameField }};
-    {{~/if}}
 
     {{#if hasInlineFragments~}}
     {{#each inlineFragments}}
@@ -161,6 +233,22 @@ class {{ className }} {{
 
     return json;
   }
+
+  {{#if selectionSetOf}}
+  /// Construct a [{{ className }}] from a [{{selectionSetOf}}]
+  factory {{ className }}.from({{ selectionSetOf }} source) {
+    assert(source != null, "Cannot construct {{ className }} from null");
+    return {{ className }}(
+      {{dartName @root.config.typenameField}}: source.{{dartName @root.config.typenameField}},
+      {{#each inlineFragments~}}
+      {{ inlineFragmentName name}}: source.{{ inlineFragmentName name}},
+      {{~/each}}
+      {{#emptySafeEach allFields required='name' excluding='__typename' }}
+      {{ dartName name }}: source.{{ dartName name }},
+      {{/emptySafeEach}}
+    );
+  }
+  {{/if}}
 
 
 }

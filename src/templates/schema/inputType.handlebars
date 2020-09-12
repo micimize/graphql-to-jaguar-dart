@@ -1,3 +1,7 @@
+
+{{#*inline "nullify" ~}}
+{{dartName this}}: {{dartName this}} == false ? this.{{dartName this}} : null
+{{~/inline}}
 {{~#*inline "setField" ~}}
     {{ dartName name }} = {{#if (
         callMethod type
@@ -70,18 +74,20 @@
     input types are currently very simple in graphql, see
     https://github.com/graphql/graphql-spec/issues/114#issuecomment-550056235
 --}}
+{{ multilineComment description }}
 @JsonSerializable()
+@immutable
 class {{ name }} {{
-    classExtends mixins=(resolveMixins fields)
+    classExtends baseType='Equatable' mixins=(resolveMixins fields)
 }} {
-  static final String typeName = "{{ takeFirst typeName name }}";
+  static final String schemaTypeName = "{{ takeFirst typeName name }}";
 
   {{#each fields}}{{#if type}}{{#if name}}
   {{#if description }}{{ multilineComment description }}
   {{/if}}
   @JsonKey(required: {{isRequired}}, disallowNullValue: {{isRequired}})
   {{ resolveType type
-      'withSerializers'
+      'final'
       (takeFirst contextName ../contextName)
       (takeFirst contextModels ../contextModels)
       isArray
@@ -97,47 +103,76 @@ class {{ name }} {{
     {{/if}}{{/each~}}
   });
 
-  {{name}}.empty();
-
-    @protected
-    Set<String> get missingRequiredFields {
-        Set<String> missingFields = Set();
-        {{#each fields}}
-        {{~#if isRequired}}
-        if ({{ dartName name }}  == null){
-            missingFields.add("{{ dartName name }}");
-        }
-        {{/if}}
-        {{/each}}
-        return missingFields;
+  @protected
+  Set<String> get missingRequiredFields {
+    Set<String> missingFields = Set();
+    {{#each fields}}
+    {{~#if isRequired}}
+    if ({{ dartName name }}  == null){
+        missingFields.add("{{ dartName name }}");
     }
+    {{/if}}
+    {{/each}}
+    return missingFields;
+  }
 
-    void validate(){
-        final missing = missingRequiredFields;
-        assert(missing.isEmpty, "$runtimeType#$hashCode is missing required fields $missing"); 
-    }
+  void validate(){
+    final missing = missingRequiredFields;
+    assert(missing.isEmpty, "$runtimeType#$hashCode is missing required fields $missing"); 
+  }
 
-    bool get isValid => missingRequiredFields.isEmpty;
+  bool get isValid => missingRequiredFields.isEmpty;
 
-    /// Adds all fields from [other] to this `{{ name }}`.
-    /// 
-    /// If a field from [other] is already in this `{{ name }}`,
-    /// its value is not overwritten, unless  `overwrite: true` is specified
-    void addAll(covariant {{ name }} other, { bool overwrite = true, }) {
-        assert(other != null, "Cannot add all from null into $this");
-        if (overwrite != null && overwrite){
-            {{#each fields}}{{#if name}}
-            {{ dartName name }} = other.{{ dartName name }} ?? {{ dartName name }};
-            {{~/if}}{{/each}}
-        } else {
-            {{#each fields}}{{#if name}}
-            {{ dartName name }} ??= other.{{ dartName name }};
-            {{~/if}}{{/each}}
-        }
-    }
+  @override
+  List<Object> get props => [
+    {{~#each fields}}{{#if name}}
+    {{ dartName name }},
+    {{/if}}{{/each~}}
+  ];
 
-  /// Creates a copy of this `{{ name }}`
-  {{ name }} copy() => {{name}}.empty()..addAll(this);
+  /// Creates a new [{{ name }}] with the given non-null values overridden
+  {{name}} copyWith({
+    {{#each fields}}{{#if name~}}
+      {{ resolveType type
+            'inline'
+            (takeFirst contextName ../contextName)
+            (takeFirst contextModels ../contextModels)
+            isArray
+            raw
+            ../name
+      }} {{ dartName name }},
+    {{/if}}{{/each~}}
+  }) => {{name}}(
+    {{#each fields}}{{#if name~}}
+    {{ dartName name }}: {{ dartName name }} ?? this.{{ dartName name }},
+    {{/if}}{{/each~}}
+  );
+
+  /// Creates a new [{{ className }}] with the specified fields nullified
+  ///
+  /// All fields default to `false`, so `field: null` or `field: true` nullifies a field.
+  {{ name }} copyWithout({
+    {{#emptySafeEach fields required='name' }}
+    bool {{dartName name}} = false,
+    {{/emptySafeEach}}
+  }) => {{ name }}(
+    {{#emptySafeEach fields required='name'}}
+    {{> nullify name }},
+    {{/emptySafeEach}}
+  );
+
+  /// Creates a new [{{ name }}] with non-null values from [other] as attribute overrides
+  {{ name }} mergedLeftWith(covariant {{ name }} other) {
+    assert(other != null, "$this Cannot be merged with null");
+    return {{ name }}(
+      {{~#each fields}}{{#if name}}
+      {{ dartName name }}: other.{{ dartName name }} ?? {{ dartName name }},
+      {{/if}}{{/each~}}
+    );
+  }
+
+  /// Alias for [mergedLeftWith]
+  {{ name }} operator <<(covariant {{ name }} other) => mergedLeftWith(other);
 
   {{#each (addInputHelpers name) ~}}
   {{> inputTypeHelpers .. objectType=this }}

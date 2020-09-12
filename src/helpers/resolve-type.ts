@@ -32,14 +32,7 @@ export const inlineFragmentName = ({
 const JSON_CONVERTER_TEMPLATE = "@${type}Converter()";
 
 function jsonConverter(type: string) {
-  return interpolateTemplate(JSON_CONVERTER_TEMPLATE, { type }) + "\n";
-}
-
-function jsonKey({ type, addSerializers = false }) {
-  if (!addSerializers) {
-    return "";
-  }
-  return jsonConverter(type);
+  return interpolateTemplate(JSON_CONVERTER_TEMPLATE, { type });
 }
 
 function wrap(isArray, fieldType) {
@@ -70,20 +63,39 @@ export type ResolveTypeConfig = {
   irreducibleTypes?: Array<string>;
 };
 
+type Qualifier = "final" | "inline" | "get";
+function qualify({
+  qualifier,
+  type,
+  decorator = ""
+}: {
+  qualifier: Qualifier;
+  type: string;
+  decorator?: string;
+}) {
+  switch (qualifier) {
+    case "final":
+      return `${decorator ? decorator + "\n" : ""}final ${type}`;
+    case "get":
+      return `${decorator}\n${type} get`;
+    default:
+      return type;
+  }
+}
+
 export default function configureResolveType({
   scalars = {},
   replaceTypes = {},
   irreducibleTypes = []
 }: ResolveTypeConfig) {
   function resolveType(
-    type,
-    jsonKeyInfo,
-    contextName,
+    type: string,
+    qualifier: "final" | "inline" | "get",
+    contextName: string,
     contextModels = [],
-    isArray,
-    rawTypeText
+    isArray: boolean,
+    rawTypeText: string
   ) {
-    let addSerializers = !(jsonKeyInfo == "inline");
     let fieldType =
       asIrreducible(rawTypeText, irreducibleTypes) ||
       (contextModels.filter(({ modelType }) => modelType === type).length
@@ -97,21 +109,18 @@ export default function configureResolveType({
       fieldType = scalars[fieldType];
       if (!(fieldType in primitives)) {
         return new SafeString(
-          jsonKey({
-            type: fieldType,
-            addSerializers
-            //className: className,
-            //required: isRequired,
-          }) + wrap(isArray, fieldType)
+          qualify({
+            qualifier,
+            decorator: jsonConverter(fieldType),
+            type: wrap(isArray, fieldType)
+          })
         );
       } else {
         fieldType = primitives[fieldType];
       }
     }
     return new SafeString(
-      jsonKey({
-        type: fieldType /*required: isRequired, className: className*/
-      }) + wrap(isArray, fieldType)
+      qualify({ qualifier, type: wrap(isArray, fieldType) })
     );
   }
   return resolveType;

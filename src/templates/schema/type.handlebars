@@ -1,12 +1,13 @@
 {{~#*inline "fieldsClass" ~}}
 {{ multilineComment description }}
-class {{ className }}  {{ classExtends interfaces=(wrapFields interfaces) }} {
+@immutable
+class {{ className }} {{ classExtends baseType='Equatable' interfaces=(wrapFields interfaces) }} {
 
   {{#each fields}}{{#if type}}{{#if name}}
   {{#if description }}{{ multilineComment description }}
   {{/if}}
   {{ resolveType type
-      "inline"
+      "final"
       (takeFirst contextName ../contextName)
       (takeFirst contextModels ../contextModels)
       isArray
@@ -15,27 +16,29 @@ class {{ className }}  {{ classExtends interfaces=(wrapFields interfaces) }} {
   }} {{ dartName name }};
   {{~/if}}{{/if}}{{/each}}
 
-  {{ className }}({
+  const {{ className }}({
     {{#each fields}}{{#if name}}
       this.{{ dartName name }},
     {{/if}}{{/each}}
   });
 
-  /// Adds all fields from [other] to this `{{ className }}`.
-  /// 
-  /// pre-existing values are not overwritten unless `overwrite: true`
-  void addAll(covariant {{ className }} other, { bool overwrite = true, }) {
-    assert(other != null, "Cannot add all from null into $this");
-    if (overwrite != null && overwrite){
-      {{#each fields}}{{#if name}}
-      {{ dartName name }} = other.{{ dartName name }} ?? {{ dartName name }};
-      {{~/if}}{{/each}}
-    } else {
-      {{#each fields}}{{#if name}}
-      {{ dartName name }} ??= other.{{ dartName name }};
-      {{~/if}}{{/each}}
-    }
+  @override
+  List<Object> get props => [
+    {{~#each fields}}{{#if name}}
+    {{ dartName name }},
+    {{/if}}{{/each~}}
+  ];
+
+  /// Creates a new [{{ className }}] with non-null values from [other] as attribute overrides
+  {{ className }} mergedLeftWith(covariant {{ className }} other) {
+    assert(other != null, "$this Cannot be merged with null");
+    return {{ className }}(
+      {{~#each fields}}{{#if name}}
+      {{ dartName name }}: other.{{ dartName name }} ?? {{ dartName name }},
+      {{/if}}{{/each~}}
+    );
   }
+    
 }
 {{~/inline~}}
 
@@ -50,12 +53,15 @@ class {{ className }}  {{ classExtends interfaces=(wrapFields interfaces) }} {
 {{> fieldsClass this className=(concat "_" name "Fields") }}
 
 {{ multilineComment description }}
-/// NOTE: You can add unexposed fields with `addAll`
-class {{ name }} {{ classExtends interfaces=interfaces }} {
-  static final String typeName = "{{ takeFirst typeName name }}";
+@immutable
+class {{ name }} {{ classExtends baseType='Equatable' interfaces=interfaces }} {
+  static final String schemaTypeName = "{{ takeFirst typeName name }}";
 
   @protected
-  covariant _{{ name }}Fields fields;
+  final _{{ name }}Fields fields;
+
+  @protected
+  const {{name}}.fromFields(this.fields);
 
   {{name}}(
     {{#emptySafeEach fields
@@ -79,21 +85,41 @@ class {{ name }} {{ classExtends interfaces=interfaces }} {
     {{/each}}
   );
 
-  /// Adds all fields from [other] to this `{{ name }}`.
-  /// 
-  /// pre-existing values are not overwritten unless `overwrite: true`
-  void addAll(covariant {{ name }} other, { bool overwrite = true, }) =>
-    fields.addAll(other.fields, overwrite: overwrite);
+  @override
+  List<Object> get props => [fields];
 
-  /// Creates a copy of this `{{ name }}`
-  {{ name }} copy() => {{ name }}()..addAll(this);
+  {{!-- not sure why but this breaks things 
+  /// Creates a new [{{ name }}] with the given non-null values overridden
+  {{ name }} copyWith({{#emptySafeEach fields required='name' excluding='__typename' prefix='{' suffix='}'}}
+      {{ resolveType type
+          "inline"
+          (takeFirst contextName ../contextName)
+          (takeFirst contextModels ../contextModels)
+          isArray
+          raw
+          ../name
+      }} {{ dartName name }},
+  {{/emptySafeEach}}) => {{ name }}(
+    {{~#each fields}}
+    {{ dartName name }}: {{ dartName name }} ?? this.{{ dartName name }},
+    {{/each~}}
+  );
+  --}}
+
+
+  /// Creates a new [{{ name }}] with non-null values from [other] as attribute overrides
+  {{ name }} mergedLeftWith(covariant {{ name }} other) =>
+    {{ name }}.fromFields(fields.mergedLeftWith(other.fields));
+
+  /// Alias for [mergedLeftWith]
+  {{ name }} operator <<(covariant {{ name }} other) => mergedLeftWith(other);
 
   @protected
   Set<String> get missingRequiredFields {
     Set<String> missingFields = Set();
     {{#each fields}}
     {{~#if isRequired}}
-    if (fields.{{ dartName name }}  == null){
+    if (fields.{{ dartName name }} == null){
         missingFields.add("{{ dartName name }}");
     }
     {{/if}}

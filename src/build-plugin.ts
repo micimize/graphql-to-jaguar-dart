@@ -10,6 +10,7 @@ import { flattenTypes } from "graphql-codegen-plugin-helpers";
 import configureHelpers, { Config as HelperConfig } from "./helpers";
 import { dedupe } from "./helpers/utils";
 import { basename, extname } from "path";
+import canonicalize from "./canonicalize";
 
 type Scalars = Record<"String" | "Int" | "Float" | "Boolean" | "ID", string>;
 
@@ -52,10 +53,8 @@ export type DartConfig = HelperConfig & {
   /**
    * Field to base union / inline fragment resolution on. Field will be `@protected`
    * @default '__typename'
-   *
-   * Can be set to `false` to disable automatic addition of meta fields
    */
-  typenameField?: false | string;
+  typenameField?: string;
 
   /**
    * { prefix, suffix } to wrap inline fragment type names with
@@ -119,7 +118,7 @@ export default function buildPlugin(
     config: DartConfig,
     { outputFile }
   ): Promise<string> => {
-    if (config.typenameField == undefined) {
+    if (!config.typenameField) {
       config.typenameField = "__typename";
     }
     config[route] = mergeDirectives(dartDirectives, config[route]);
@@ -132,7 +131,13 @@ export default function buildPlugin(
 
     const templateContext = schemaToTemplateContext(schema);
 
-    const transformedDocuments = transformDocumentsFiles(schema, documents);
+    const transformedDocuments = transformDocumentsFiles(
+      schema,
+      documents.map(d => ({
+        ...d,
+        content: canonicalize(d.content)
+      }))
+    );
 
     const flattenDocuments = flattenTypes(transformedDocuments);
 

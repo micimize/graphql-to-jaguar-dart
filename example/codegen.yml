@@ -18,12 +18,9 @@ config:
   inlineFragmentFieldNames: { "prefix": "on", "suffix": "" }
   schema:
     parts: []
-    imports:
-      - ./example_mixin.dart
+   #imports:
+   #  - ./example_mixin.dart
     exports:
-      - ./example_mixin.dart
-  documents:
-    imports:
       - ./example_mixin.dart
   mixins:
      - name: HelloMixin

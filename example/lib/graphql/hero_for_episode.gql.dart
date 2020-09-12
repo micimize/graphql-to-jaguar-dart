@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:meta/meta.dart';
 import 'package:json_annotation/json_annotation.dart';
-import './example_mixin.dart';
 import 'package:starwars/graphql/schema.dart';
 import 'package:starwars/graphql/_human_fragment.gql.dart';
 
@@ -12,7 +11,7 @@ part 'hero_for_episode.gql.g.dart';
 @JsonSerializable()
 class HeroForEpisodeVariables {
   @JsonKey(required: true, disallowNullValue: true)
-  Episode ep;
+  final Episode ep;
 
   HeroForEpisodeVariables({
     @required this.ep,
@@ -28,20 +27,34 @@ class HeroForEpisodeVariables {
 class HeroForEpisodeHumanInlineFragment extends Human with Info, Relationships {
   static final String schemaTypeName = "Human";
 
-  @protected
-  String typename;
+  /// The `__typename` meta-field
+  ///
+  /// GraphQL supports type name introspection at any point within a query by the meta-field `__typename: String!` ([spec])
+  ///
+  /// [spec]: https://github.com/graphql/graphql-spec/blob/c7bface58bf6f58cc809f279cba1b6245de914b4/spec/Section%204%20--%20Introspection.md#type-name-introspection)
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  final String typename;
 
   @JsonKey(name: r'appearsIn', required: true, disallowNullValue: true)
   List<Episode> get appearsIn => fields.appearsIn;
-  set appearsIn(List<Episode> appearsIn) => fields.appearsIn = appearsIn;
+  @JsonKey(name: r'planet', required: false, disallowNullValue: false)
+  final String planet;
+
+  @override
+  List<Object> get props => [
+        ...super.props,
+        planet,
+      ];
+
   HeroForEpisodeHumanInlineFragment({
+    this.typename,
     @required List<Episode> appearsIn,
     double height,
     double mass,
     String home,
-    String planet,
     List<RelationshipsFriends> friends,
     List<RelationshipsStarships> starships,
+    this.planet,
   }) : super(
           appearsIn: appearsIn,
           height: height,
@@ -49,20 +62,31 @@ class HeroForEpisodeHumanInlineFragment extends Human with Info, Relationships {
           homePlanet: home,
           friends: friends,
           starships: starships,
-        ) {
-    this.planet = planet;
-  }
+        );
 
-  HeroForEpisodeHumanInlineFragment.empty();
+  HeroForEpisodeHumanInlineFragment.fromObjectType(
+    Human objectType, {
+    this.typename,
+    this.planet,
+  }) : super.fromFields(objectType.fields);
 
-  /// Creates a copy of this `HeroForEpisodeHumanInlineFragment`
-  HeroForEpisodeHumanInlineFragment copy() =>
-      HeroForEpisodeHumanInlineFragment.empty()..addAll(this);
-
-  /// Copies fields from [other] into a new `HeroForEpisodeHumanInlineFragment`
-  HeroForEpisodeHumanInlineFragment.from(Human other) {
-    addAll(other);
-  }
+  HeroForEpisodeHumanInlineFragment.partial({
+    this.typename,
+    List<Episode> appearsIn,
+    double height,
+    double mass,
+    String home,
+    List<RelationshipsFriends> friends,
+    List<RelationshipsStarships> starships,
+    this.planet,
+  }) : super(
+          appearsIn: appearsIn,
+          height: height,
+          mass: mass,
+          homePlanet: home,
+          friends: friends,
+          starships: starships,
+        );
 
   @protected
   Set<String> get missingRequiredFields {
@@ -73,36 +97,80 @@ class HeroForEpisodeHumanInlineFragment extends Human with Info, Relationships {
     return missingFields;
   }
 
-  /// Adds all fields from [other] to this `HeroForEpisodeHumanInlineFragment`.
-  ///
-  /// pre-existing values are not overwritten unless `overwrite: true`
-  @override
-  void addAll(
-    covariant HeroForEpisodeHumanInlineFragment other, {
-    bool overwrite = true,
-  }) {
-    super.addAll(other, overwrite: overwrite);
+  /// Creates a new [HeroForEpisodeHumanInlineFragment] with the given non-null values overridden
+  HeroForEpisodeHumanInlineFragment copyWith({
+    String typename,
+    List<Episode> appearsIn,
+    double height,
+    double mass,
+    String home,
+    String planet,
+    List<RelationshipsFriends> friends,
+    List<RelationshipsStarships> starships,
+  }) =>
+      HeroForEpisodeHumanInlineFragment(
+        typename: typename ?? this.typename,
+        appearsIn: appearsIn ?? this.appearsIn,
+        height: height ?? this.height,
+        mass: mass ?? this.mass,
+        home: home ?? this.home,
+        planet: planet ?? this.planet,
+        friends: friends ?? this.friends,
+        starships: starships ?? this.starships,
+      );
 
-    if (overwrite != null && overwrite) {
-      planet = other.planet ?? planet;
-    } else {
-      planet ??= other.planet;
-    }
+  /// Creates a new [HeroForEpisodeHumanInlineFragment] with the specified fields nullified
+  ///
+  /// All fields default to `false`, so `field: null` or `field: true` nullifies a field.
+  HeroForEpisodeHumanInlineFragment copyWithout({
+    bool typename = false,
+    bool appearsIn = false,
+    bool height = false,
+    bool mass = false,
+    bool home = false,
+    bool planet = false,
+    bool friends = false,
+    bool starships = false,
+  }) =>
+      HeroForEpisodeHumanInlineFragment(
+        typename: typename == false ? this.typename : null,
+        appearsIn: appearsIn == false ? this.appearsIn : null,
+        height: height == false ? this.height : null,
+        mass: mass == false ? this.mass : null,
+        home: home == false ? this.home : null,
+        planet: planet == false ? this.planet : null,
+        friends: friends == false ? this.friends : null,
+        starships: starships == false ? this.starships : null,
+      );
+
+  /// Creates a new [HeroForEpisodeHumanInlineFragment] with non-null values from [other] as attribute overrides
+  HeroForEpisodeHumanInlineFragment mergedLeftWith(
+      covariant HeroForEpisodeHumanInlineFragment other) {
+    assert(other != null, "$this Cannot be merged with null");
+    return copyWith(
+      typename: other.typename,
+      appearsIn: other.appearsIn,
+      height: other.height,
+      mass: other.mass,
+      home: other.home,
+      planet: other.planet,
+      friends: other.friends,
+      starships: other.starships,
+    );
   }
+
+  /// Alias for [mergedLeftWith]
+  @override
+  HeroForEpisodeHumanInlineFragment operator <<(
+          covariant HeroForEpisodeHumanInlineFragment other) =>
+      mergedLeftWith(other);
 
   factory HeroForEpisodeHumanInlineFragment.fromJson(
-      Map<String, dynamic> json) {
-    HeroForEpisodeHumanInlineFragment instance =
-        _$HeroForEpisodeHumanInlineFragmentFromJson(json);
-    final __typename = json['__typename'];
-    instance.typename = __typename;
-
-    return instance;
-  }
+          Map<String, dynamic> json) =>
+      _$HeroForEpisodeHumanInlineFragmentFromJson(json);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = _$HeroForEpisodeHumanInlineFragmentToJson(this);
-    json['__typename'] = typename;
 
     return json;
   }
@@ -112,29 +180,40 @@ class HeroForEpisodeHumanInlineFragment extends Human with Info, Relationships {
 class HeroForEpisodeDroidInlineFragment extends Droid {
   static final String schemaTypeName = "Droid";
 
-  @protected
-  String typename;
+  /// The `__typename` meta-field
+  ///
+  /// GraphQL supports type name introspection at any point within a query by the meta-field `__typename: String!` ([spec])
+  ///
+  /// [spec]: https://github.com/graphql/graphql-spec/blob/c7bface58bf6f58cc809f279cba1b6245de914b4/spec/Section%204%20--%20Introspection.md#type-name-introspection)
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  final String typename;
 
   @JsonKey(name: r'primaryFunction', required: false, disallowNullValue: false)
   String get primaryFunction => fields.primaryFunction;
-  set primaryFunction(String primaryFunction) =>
-      fields.primaryFunction = primaryFunction;
+
+  @override
+  List<Object> get props => [
+        ...super.props,
+      ];
+
   HeroForEpisodeDroidInlineFragment({
+    this.typename,
     String primaryFunction,
   }) : super(
           primaryFunction: primaryFunction,
         );
 
-  HeroForEpisodeDroidInlineFragment.empty();
+  HeroForEpisodeDroidInlineFragment.fromObjectType(
+    Droid objectType, {
+    this.typename,
+  }) : super.fromFields(objectType.fields);
 
-  /// Creates a copy of this `HeroForEpisodeDroidInlineFragment`
-  HeroForEpisodeDroidInlineFragment copy() =>
-      HeroForEpisodeDroidInlineFragment.empty()..addAll(this);
-
-  /// Copies fields from [other] into a new `HeroForEpisodeDroidInlineFragment`
-  HeroForEpisodeDroidInlineFragment.from(Droid other) {
-    addAll(other);
-  }
+  HeroForEpisodeDroidInlineFragment.partial({
+    this.typename,
+    String primaryFunction,
+  }) : super(
+          primaryFunction: primaryFunction,
+        );
 
   @protected
   Set<String> get missingRequiredFields {
@@ -142,30 +221,50 @@ class HeroForEpisodeDroidInlineFragment extends Droid {
     return missingFields;
   }
 
-  /// Adds all fields from [other] to this `HeroForEpisodeDroidInlineFragment`.
+  /// Creates a new [HeroForEpisodeDroidInlineFragment] with the given non-null values overridden
+  HeroForEpisodeDroidInlineFragment copyWith({
+    String typename,
+    String primaryFunction,
+  }) =>
+      HeroForEpisodeDroidInlineFragment(
+        typename: typename ?? this.typename,
+        primaryFunction: primaryFunction ?? this.primaryFunction,
+      );
+
+  /// Creates a new [HeroForEpisodeDroidInlineFragment] with the specified fields nullified
   ///
-  /// pre-existing values are not overwritten unless `overwrite: true`
-  @override
-  void addAll(
-    covariant HeroForEpisodeDroidInlineFragment other, {
-    bool overwrite = true,
-  }) {
-    super.addAll(other, overwrite: overwrite);
+  /// All fields default to `false`, so `field: null` or `field: true` nullifies a field.
+  HeroForEpisodeDroidInlineFragment copyWithout({
+    bool typename = false,
+    bool primaryFunction = false,
+  }) =>
+      HeroForEpisodeDroidInlineFragment(
+        typename: typename == false ? this.typename : null,
+        primaryFunction: primaryFunction == false ? this.primaryFunction : null,
+      );
+
+  /// Creates a new [HeroForEpisodeDroidInlineFragment] with non-null values from [other] as attribute overrides
+  HeroForEpisodeDroidInlineFragment mergedLeftWith(
+      covariant HeroForEpisodeDroidInlineFragment other) {
+    assert(other != null, "$this Cannot be merged with null");
+    return copyWith(
+      typename: other.typename,
+      primaryFunction: other.primaryFunction,
+    );
   }
+
+  /// Alias for [mergedLeftWith]
+  @override
+  HeroForEpisodeDroidInlineFragment operator <<(
+          covariant HeroForEpisodeDroidInlineFragment other) =>
+      mergedLeftWith(other);
 
   factory HeroForEpisodeDroidInlineFragment.fromJson(
-      Map<String, dynamic> json) {
-    HeroForEpisodeDroidInlineFragment instance =
-        _$HeroForEpisodeDroidInlineFragmentFromJson(json);
-    final __typename = json['__typename'];
-    instance.typename = __typename;
-
-    return instance;
-  }
+          Map<String, dynamic> json) =>
+      _$HeroForEpisodeDroidInlineFragmentFromJson(json);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = _$HeroForEpisodeDroidInlineFragmentToJson(this);
-    json['__typename'] = typename;
 
     return json;
   }
@@ -175,27 +274,53 @@ class HeroForEpisodeDroidInlineFragment extends Droid {
 class HeroForEpisodeHero extends Character with HelloMixin {
   static final String schemaTypeName = "Character";
 
-  @protected
-  String typename;
+  /// The `__typename` meta-field
+  ///
+  /// GraphQL supports type name introspection at any point within a query by the meta-field `__typename: String!` ([spec])
+  ///
+  /// [spec]: https://github.com/graphql/graphql-spec/blob/c7bface58bf6f58cc809f279cba1b6245de914b4/spec/Section%204%20--%20Introspection.md#type-name-introspection)
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  final String typename;
 
   @JsonKey(name: r'name', required: true, disallowNullValue: true)
   String get name => fields.name;
-  set name(String name) => fields.name = name;
+
+  @JsonKey(ignore: true)
+  final HeroForEpisodeDroidInlineFragment onDroid;
+  @JsonKey(ignore: true)
+  final HeroForEpisodeHumanInlineFragment onHuman;
+
+  @override
+  List<Object> get props => [
+        ...super.props,
+        onDroid,
+        onHuman,
+      ];
+
   HeroForEpisodeHero({
+    this.typename,
+    this.onDroid,
+    this.onHuman,
     @required String name,
   }) : super(
           name: name,
         );
 
-  HeroForEpisodeHero.empty();
+  HeroForEpisodeHero.fromObjectType(
+    Character objectType, {
+    this.typename,
+    this.onDroid,
+    this.onHuman,
+  }) : super.fromFields(objectType.fields);
 
-  /// Creates a copy of this `HeroForEpisodeHero`
-  HeroForEpisodeHero copy() => HeroForEpisodeHero.empty()..addAll(this);
-
-  /// Copies fields from [other] into a new `HeroForEpisodeHero`
-  HeroForEpisodeHero.from(Character other) {
-    addAll(other);
-  }
+  HeroForEpisodeHero.partial({
+    this.typename,
+    this.onDroid,
+    this.onHuman,
+    String name,
+  }) : super(
+          name: name,
+        );
 
   @protected
   Set<String> get missingRequiredFields {
@@ -206,48 +331,71 @@ class HeroForEpisodeHero extends Character with HelloMixin {
     return missingFields;
   }
 
-  /// Adds all fields from [other] to this `HeroForEpisodeHero`.
+  /// Creates a new [HeroForEpisodeHero] with the given non-null values overridden
+  HeroForEpisodeHero copyWith({
+    String typename,
+    HeroForEpisodeDroidInlineFragment onDroid,
+    HeroForEpisodeHumanInlineFragment onHuman,
+    String name,
+  }) =>
+      HeroForEpisodeHero(
+        typename: typename ?? this.typename,
+        onDroid: onDroid != null
+            ? this.onDroid?.mergedLeftWith(onDroid) ?? onDroid
+            : this.onDroid,
+        onHuman: onHuman != null
+            ? this.onHuman?.mergedLeftWith(onHuman) ?? onHuman
+            : this.onHuman,
+        name: name ?? this.name,
+      );
+
+  /// Creates a new [HeroForEpisodeHero] with the specified fields nullified
   ///
-  /// pre-existing values are not overwritten unless `overwrite: true`
+  /// All fields default to `false`, so `field: null` or `field: true` nullifies a field.
+  HeroForEpisodeHero copyWithout({
+    bool typename = false,
+    bool onDroid = false,
+    bool onHuman = false,
+    bool name = false,
+  }) =>
+      HeroForEpisodeHero(
+        typename: typename == false ? this.typename : null,
+        onDroid: onDroid == false ? this.onDroid : null,
+        onHuman: onHuman == false ? this.onHuman : null,
+        name: name == false ? this.name : null,
+      );
+
+  /// Creates a new [HeroForEpisodeHero] with non-null values from [other] as attribute overrides
+  HeroForEpisodeHero mergedLeftWith(covariant HeroForEpisodeHero other) {
+    assert(other != null, "$this Cannot be merged with null");
+    return copyWith(
+      typename: other.typename,
+      onDroid: other.onDroid,
+      onHuman: other.onHuman,
+      name: other.name,
+    );
+  }
+
+  /// Alias for [mergedLeftWith]
   @override
-  void addAll(
-    covariant HeroForEpisodeHero other, {
-    bool overwrite = true,
-  }) {
-    super.addAll(other, overwrite: overwrite);
+  HeroForEpisodeHero operator <<(covariant HeroForEpisodeHero other) =>
+      mergedLeftWith(other);
 
-    if (other.onDroid != null) {
-      onDroid ??= HeroForEpisodeDroidInlineFragment.empty();
-      onDroid.addAll(other.onDroid, overwrite: overwrite);
-    }
-    if (other.onHuman != null) {
-      onHuman ??= HeroForEpisodeHumanInlineFragment.empty();
-      onHuman.addAll(other.onHuman, overwrite: overwrite);
-    }
-  }
-
-  @JsonKey(ignore: true)
-  HeroForEpisodeDroidInlineFragment onDroid;
-  @JsonKey(ignore: true)
-  HeroForEpisodeHumanInlineFragment onHuman;
-
-  factory HeroForEpisodeHero.fromJson(Map<String, dynamic> json) {
-    HeroForEpisodeHero instance = _$HeroForEpisodeHeroFromJson(json);
-    final __typename = json['__typename'];
-    instance.typename = __typename;
-
-    if (HeroForEpisodeDroidInlineFragment.schemaTypeName == __typename) {
-      instance.onDroid = HeroForEpisodeDroidInlineFragment.fromJson(json);
-    }
-    if (HeroForEpisodeHumanInlineFragment.schemaTypeName == __typename) {
-      instance.onHuman = HeroForEpisodeHumanInlineFragment.fromJson(json);
-    }
-    return instance;
-  }
+  factory HeroForEpisodeHero.fromJson(Map<String, dynamic> json) =>
+      _$HeroForEpisodeHeroFromJson(json).copyWith(
+        onDroid: HeroForEpisodeDroidInlineFragment.schemaTypeName ==
+                json['__typename']
+            ? HeroForEpisodeDroidInlineFragment.fromJson(json)
+            : null,
+        onHuman: HeroForEpisodeHumanInlineFragment.schemaTypeName ==
+                json['__typename']
+            ? HeroForEpisodeHumanInlineFragment.fromJson(json)
+            : null,
+      );
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = _$HeroForEpisodeHeroToJson(this);
-    json['__typename'] = typename;
+
     if (onDroid != null) {
       json.addAll(onDroid.toJson());
     }
@@ -263,27 +411,40 @@ class HeroForEpisodeHero extends Character with HelloMixin {
 class HeroForEpisodeQuery extends Query {
   static final String schemaTypeName = "query";
 
-  @protected
-  String typename;
+  /// The `__typename` meta-field
+  ///
+  /// GraphQL supports type name introspection at any point within a query by the meta-field `__typename: String!` ([spec])
+  ///
+  /// [spec]: https://github.com/graphql/graphql-spec/blob/c7bface58bf6f58cc809f279cba1b6245de914b4/spec/Section%204%20--%20Introspection.md#type-name-introspection)
+  @JsonKey(name: r'__typename', required: false, disallowNullValue: true)
+  final String typename;
 
   @JsonKey(name: r'hero', required: false, disallowNullValue: false)
   HeroForEpisodeHero get hero => fields.hero;
-  set hero(HeroForEpisodeHero hero) => fields.hero = hero;
+
+  @override
+  List<Object> get props => [
+        ...super.props,
+      ];
+
   HeroForEpisodeQuery({
+    this.typename,
     HeroForEpisodeHero hero,
   }) : super(
           hero: hero,
         );
 
-  HeroForEpisodeQuery.empty();
+  HeroForEpisodeQuery.fromObjectType(
+    Query objectType, {
+    this.typename,
+  }) : super.fromFields(objectType.fields);
 
-  /// Creates a copy of this `HeroForEpisodeQuery`
-  HeroForEpisodeQuery copy() => HeroForEpisodeQuery.empty()..addAll(this);
-
-  /// Copies fields from [other] into a new `HeroForEpisodeQuery`
-  HeroForEpisodeQuery.from(Query other) {
-    addAll(other);
-  }
+  HeroForEpisodeQuery.partial({
+    this.typename,
+    HeroForEpisodeHero hero,
+  }) : super(
+          hero: hero,
+        );
 
   @protected
   Set<String> get missingRequiredFields {
@@ -291,28 +452,47 @@ class HeroForEpisodeQuery extends Query {
     return missingFields;
   }
 
-  /// Adds all fields from [other] to this `HeroForEpisodeQuery`.
+  /// Creates a new [HeroForEpisodeQuery] with the given non-null values overridden
+  HeroForEpisodeQuery copyWith({
+    String typename,
+    HeroForEpisodeHero hero,
+  }) =>
+      HeroForEpisodeQuery(
+        typename: typename ?? this.typename,
+        hero: hero ?? this.hero,
+      );
+
+  /// Creates a new [HeroForEpisodeQuery] with the specified fields nullified
   ///
-  /// pre-existing values are not overwritten unless `overwrite: true`
+  /// All fields default to `false`, so `field: null` or `field: true` nullifies a field.
+  HeroForEpisodeQuery copyWithout({
+    bool typename = false,
+    bool hero = false,
+  }) =>
+      HeroForEpisodeQuery(
+        typename: typename == false ? this.typename : null,
+        hero: hero == false ? this.hero : null,
+      );
+
+  /// Creates a new [HeroForEpisodeQuery] with non-null values from [other] as attribute overrides
+  HeroForEpisodeQuery mergedLeftWith(covariant HeroForEpisodeQuery other) {
+    assert(other != null, "$this Cannot be merged with null");
+    return copyWith(
+      typename: other.typename,
+      hero: other.hero,
+    );
+  }
+
+  /// Alias for [mergedLeftWith]
   @override
-  void addAll(
-    covariant HeroForEpisodeQuery other, {
-    bool overwrite = true,
-  }) {
-    super.addAll(other, overwrite: overwrite);
-  }
+  HeroForEpisodeQuery operator <<(covariant HeroForEpisodeQuery other) =>
+      mergedLeftWith(other);
 
-  factory HeroForEpisodeQuery.fromJson(Map<String, dynamic> json) {
-    HeroForEpisodeQuery instance = _$HeroForEpisodeQueryFromJson(json);
-    final __typename = json['__typename'];
-    instance.typename = __typename;
-
-    return instance;
-  }
+  factory HeroForEpisodeQuery.fromJson(Map<String, dynamic> json) =>
+      _$HeroForEpisodeQueryFromJson(json);
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = _$HeroForEpisodeQueryToJson(this);
-    json['__typename'] = typename;
 
     return json;
   }
